@@ -3,3 +3,9 @@ version: '${project.version}'
 main: dev.blakeismywaifu.mcdnd.Main
 api-version: '1.20'
 author: BlakeIsMyWaifu
+commands:
+  bind:
+    description: Binds a dnd beyond character id to a player
+    usage: /bind <id|view|delete> [player]
+    permission: dnd.bind
+    permission-message: You don't have permission <permission>

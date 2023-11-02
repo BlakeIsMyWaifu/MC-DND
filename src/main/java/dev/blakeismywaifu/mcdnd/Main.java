@@ -1,17 +1,34 @@
 package dev.blakeismywaifu.mcdnd;
 
-import dev.blakeismywaifu.mcdnd.Utils.Log;
+import dev.blakeismywaifu.mcdnd.Commands.Bind;
+import dev.blakeismywaifu.mcdnd.Data.PlayerCache;
+import dev.blakeismywaifu.mcdnd.Utils.Console;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 public final class Main extends JavaPlugin {
 
+	public static Map<UUID, PlayerCache> cache = new HashMap<>();
+
 	@Override
 	public void onEnable() {
-		Log.info("Plugin Enabled");
+		Console.info("Plugin Enabled");
+
+		Map<String, CommandExecutor> commands = new HashMap<>();
+		commands.put("bind", new Bind());
+		commands.forEach((name, object) -> {
+			PluginCommand pluginCommand = getCommand(name);
+			if (pluginCommand != null) pluginCommand.setExecutor(object);
+		});
 	}
 
 	@Override
 	public void onDisable() {
-		Log.info("Plugin Disabled");
+		Console.info("Plugin Disabled");
 	}
 }
