@@ -1,6 +1,7 @@
 package dev.blakeismywaifu.mcdnd.Commands;
 
 import dev.blakeismywaifu.mcdnd.Data.PlayerCache;
+import dev.blakeismywaifu.mcdnd.Tasks.FullUpdate;
 import dev.blakeismywaifu.mcdnd.Utils.CommandResponse;
 import dev.blakeismywaifu.mcdnd.Utils.Utils;
 import net.kyori.adventure.text.Component;
@@ -14,6 +15,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
@@ -21,6 +23,12 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class Bind implements CommandExecutor {
+
+	Plugin plugin;
+
+	public Bind(Plugin plugin) {
+		this.plugin = plugin;
+	}
 
 	@Override
 	public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
@@ -87,6 +95,8 @@ public class Bind implements CommandExecutor {
 		}
 
 		PlayerCache.putBind(player.getUniqueId(), args[0]);
+		
+		new FullUpdate().runTaskAsynchronously(plugin);
 
 		CommandResponse.success(sender, "Successfully bound: " + player.getName() + " to " + args[0]);
 

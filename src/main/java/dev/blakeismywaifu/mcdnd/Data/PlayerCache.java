@@ -1,7 +1,7 @@
 package dev.blakeismywaifu.mcdnd.Data;
 
-import com.google.gson.JsonObject;
 import dev.blakeismywaifu.mcdnd.Main;
+import org.json.simple.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -11,7 +11,7 @@ public class PlayerCache {
 
 	public UUID uuid;
 	public String characterId;
-	public JsonObject cache;
+	public JSONObject cache;
 
 	public PlayerCache(UUID uuid) {
 		this.uuid = uuid;
@@ -35,8 +35,8 @@ public class PlayerCache {
 		Main.cache.get(uuid).characterId = characterId;
 	}
 
-	public static Map<UUID, JsonObject> getCache() {
-		Map<UUID, JsonObject> out = new HashMap<>();
+	public static Map<UUID, JSONObject> getCache() {
+		Map<UUID, JSONObject> out = new HashMap<>();
 		Main.cache.forEach((key, value) -> {
 			if (value.cache == null) return;
 			out.put(key, value.cache);
@@ -44,7 +44,7 @@ public class PlayerCache {
 		return out;
 	}
 
-	public static void putCache(UUID uuid, JsonObject cache) {
+	public static void putCache(UUID uuid, JSONObject cache) {
 		createCache(uuid);
 		Main.cache.get(uuid).cache = cache;
 	}
