@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Character {
+
 	public String name;
 	public String gender;
 	public String race;
@@ -22,6 +23,7 @@ public class Character {
 		JSONObject raceData = (JSONObject) data.get("race");
 		this.race = (String) raceData.get("fullName");
 
+		// TODO only tracks main class
 		JSONArray classData = (JSONArray) data.get("classes");
 		JSONObject mainClass = (JSONObject) classData.get(0);
 		JSONObject mainClassDefinition = (JSONObject) mainClass.get("definition");

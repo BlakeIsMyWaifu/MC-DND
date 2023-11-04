@@ -27,7 +27,7 @@ public final class Main extends JavaPlugin {
 			if (pluginCommand != null) pluginCommand.setExecutor(object);
 		});
 
-		new FullUpdate().runTaskTimerAsynchronously(this, 0, 400);
+		new FullUpdate().runTaskTimerAsynchronously(this, 0, 6000);
 	}
 
 	@Override
