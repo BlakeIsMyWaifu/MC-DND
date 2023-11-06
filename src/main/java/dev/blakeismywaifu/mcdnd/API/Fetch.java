@@ -12,10 +12,26 @@ import java.net.URL;
 
 public class Fetch {
 
-	public static JSONObject getRequest(String uri) {
+	private final String uri;
+
+	public Fetch(String uri) {
+		this.uri = uri;
+	}
+
+	private static JSONObject JSONParse(String str) {
+		JSONObject out = new JSONObject();
+		try {
+			out = (JSONObject) new JSONParser().parse(str);
+		} catch (ParseException err) {
+			err.printStackTrace();
+		}
+		return out;
+	}
+
+	public JSONObject getData() {
 		StringBuilder content = new StringBuilder();
 		try {
-			URL url = new URL(uri);
+			URL url = new URL(this.uri);
 			InputStreamReader streamReader = new InputStreamReader(url.openStream());
 			BufferedReader bufferedReader = new BufferedReader(streamReader);
 			String line;
@@ -31,21 +47,11 @@ public class Fetch {
 		Boolean status = (Boolean) json.get("success");
 
 		if (status) {
-			Console.info("API Success from url " + uri);
+			Console.info("API Success from url " + this.uri);
 		} else {
-			Console.error("API Failed from url " + uri);
+			Console.error("API Failed from url " + this.uri);
 		}
 
 		return (JSONObject) json.get("data");
-	}
-
-	private static JSONObject JSONParse(String str) {
-		JSONObject out = new JSONObject();
-		try {
-			out = (JSONObject) new JSONParser().parse(str);
-		} catch (ParseException err) {
-			err.printStackTrace();
-		}
-		return out;
 	}
 }

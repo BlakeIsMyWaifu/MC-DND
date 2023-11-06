@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.UUID;
 
 public class FullUpdate extends BukkitRunnable {
+
 	@Override
 	public void run() {
 		Map<UUID, String> players = PlayerCache.getBinds();
@@ -20,8 +21,8 @@ public class FullUpdate extends BukkitRunnable {
 			if (player == null || !player.isOnline() || player.getGameMode() != GameMode.ADVENTURE || !player.hasPermission("dnd.player"))
 				return;
 
-			CharacterData.getAndCacheData(player.getUniqueId(), entry.getValue());
-			PlayerItems.updateItems(player);
+			new CharacterData(player.getUniqueId(), entry.getValue()).getAndCacheData();
+			new PlayerItems(player).updateItems();
 		}
 	}
 }

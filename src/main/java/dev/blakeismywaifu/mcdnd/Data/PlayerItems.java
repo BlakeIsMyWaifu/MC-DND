@@ -7,10 +7,16 @@ import org.json.simple.JSONObject;
 
 public class PlayerItems {
 
-	public static void updateItems(Player player) {
-		JSONObject json = PlayerCache.getCache().get(player.getUniqueId());
+	private final Player player;
 
-		player.getInventory().setItem(9, Character.item(json));
-		player.getInventory().setItem(10, Miscellaneous.item(json));
+	public PlayerItems(Player player) {
+		this.player = player;
+	}
+
+	public void updateItems() {
+		JSONObject json = PlayerCache.getCache().get(this.player.getUniqueId());
+
+		this.player.getInventory().setItem(9, new Character(json).getItem());
+		this.player.getInventory().setItem(10, new Miscellaneous(json).getItem());
 	}
 }

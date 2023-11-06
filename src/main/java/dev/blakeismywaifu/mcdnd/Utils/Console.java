@@ -13,8 +13,7 @@ public final class Console {
 	}
 
 	public static void warn(final String message) {
-		Bukkit.getConsoleSender().sendMessage(Component.text(prefix + "[WARN]", NamedTextColor.WHITE).append(Component.text(message, NamedTextColor.YELLOW))
-		);
+		Bukkit.getConsoleSender().sendMessage(Component.text(prefix + "[WARN]", NamedTextColor.WHITE).append(Component.text(message, NamedTextColor.YELLOW)));
 	}
 
 	public static void error(final String message) {

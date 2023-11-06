@@ -1,13 +1,13 @@
 package dev.blakeismywaifu.mcdnd.Stats;
 
 import dev.blakeismywaifu.mcdnd.Stats.Helpers.Modifiers;
-import dev.blakeismywaifu.mcdnd.Utils.Item;
+import dev.blakeismywaifu.mcdnd.Utils.ItemBuilder;
 import dev.blakeismywaifu.mcdnd.Utils.Range;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.inventory.ItemStack;
 import org.json.simple.JSONObject;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,7 +17,6 @@ public class Miscellaneous {
 	public Long speed;
 	public Boolean inspiration;
 	public Long initiative;
-	public Long armour;
 
 	public Miscellaneous(JSONObject json) {
 		this.proficiency = getProficiency(json);
@@ -27,14 +26,18 @@ public class Miscellaneous {
 		this.inspiration = (Boolean) json.get("inspiration");
 	}
 
-	public static ItemStack item(JSONObject json) {
-		Miscellaneous data = new Miscellaneous(json);
-		ArrayList<String> lore = new ArrayList<>();
-		lore.add(ChatColor.WHITE + "+" + data.proficiency + ChatColor.GRAY + " Proficiency Bonus");
-		lore.add(ChatColor.WHITE + "+" + data.initiative + ChatColor.GRAY + " Initiative");
-		lore.add(ChatColor.WHITE + data.speed.toString() + ChatColor.GRAY + "ft. Walking Speed");
-		lore.add((data.inspiration ? ChatColor.GREEN : ChatColor.RED) + "Inspiration");
-		return Item.create(Item.main, "Miscellaneous:", lore, 1);
+	public ItemStack getItem() {
+		ItemBuilder itemBuilder = new ItemBuilder("Miscellaneous");
+		itemBuilder.lore(loreLine("+" + this.proficiency, " Proficiency Bonus"));
+		itemBuilder.lore(loreLine("+" + this.initiative, " Initiative"));
+		itemBuilder.lore(loreLine(this.speed.toString(), "ft. Walking Speed"));
+		itemBuilder.lore(Component.text("Inspiration", this.inspiration ? NamedTextColor.GREEN : NamedTextColor.RED));
+		itemBuilder.modelData(1);
+		return itemBuilder.getItem();
+	}
+
+	private Component loreLine(String stat, String description) {
+		return Component.text(stat, NamedTextColor.WHITE).append(Component.text(description, NamedTextColor.GRAY));
 	}
 
 	private Long getProficiency(JSONObject json) {
