@@ -4,6 +4,8 @@ import org.jetbrains.annotations.Nullable;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 public class Modifiers {
@@ -43,7 +45,13 @@ public class Modifiers {
 		if (entityTypeId != null) this.entityTypeId = (Long) entityTypeId;
 
 		String type = (String) json.get("type");
-		this.type = Objects.equals(type, "bonus") ? Type.BONUS : Type.PROFICIENCY;
+		Map<String, Type> typeMap = new HashMap<>();
+		typeMap.put("bonus", Type.BONUS);
+		typeMap.put("proficiency", Type.PROFICIENCY);
+		typeMap.put("set-base", Type.BASE);
+		typeMap.put("advantage", Type.ADVANTAGE);
+		typeMap.put("set", Type.SET);
+		this.type = typeMap.get(type);
 
 		this.subType = (String) json.get("subType");
 
@@ -87,8 +95,11 @@ public class Modifiers {
 		return Math.toIntExact(out);
 	}
 
-	enum Type {
+	public enum Type {
 		BONUS,
-		PROFICIENCY
+		PROFICIENCY,
+		BASE,
+		ADVANTAGE,
+		SET
 	}
 }

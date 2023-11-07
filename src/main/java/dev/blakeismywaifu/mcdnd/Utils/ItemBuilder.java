@@ -37,7 +37,7 @@ public class ItemBuilder {
 		create(material, name);
 	}
 
-	public ItemStack getItem() {
+	public ItemStack build() {
 		return this.item;
 	}
 

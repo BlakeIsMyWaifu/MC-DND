@@ -39,6 +39,6 @@ public class Character {
 		ItemBuilder itemBuilder = new ItemBuilder(this.name);
 		itemBuilder.lore(String.join(", ", info));
 		itemBuilder.lore("Level " + this.level);
-		return itemBuilder.getItem();
+		return itemBuilder.build();
 	}
 }

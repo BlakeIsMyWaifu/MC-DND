@@ -1,4 +1,4 @@
-package dev.blakeismywaifu.mcdnd.API;
+package dev.blakeismywaifu.mcdnd.Data;
 
 import dev.blakeismywaifu.mcdnd.Utils.Console;
 import org.json.simple.JSONObject;

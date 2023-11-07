@@ -2,7 +2,7 @@ package dev.blakeismywaifu.mcdnd;
 
 import dev.blakeismywaifu.mcdnd.Commands.Bind;
 import dev.blakeismywaifu.mcdnd.Data.PlayerCache;
-import dev.blakeismywaifu.mcdnd.Tasks.FullUpdate;
+import dev.blakeismywaifu.mcdnd.Tasks.FullUpdateAll;
 import dev.blakeismywaifu.mcdnd.Utils.Console;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.PluginCommand;
@@ -10,11 +10,10 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 public final class Main extends JavaPlugin {
 
-	public static Map<UUID, PlayerCache> cache = new HashMap<>();
+	public PlayerCache playerCache = new PlayerCache();
 
 	@Override
 	public void onEnable() {
@@ -27,7 +26,7 @@ public final class Main extends JavaPlugin {
 			if (pluginCommand != null) pluginCommand.setExecutor(object);
 		});
 
-		new FullUpdate().runTaskTimerAsynchronously(this, 0, 6000);
+		new FullUpdateAll(this).runTaskTimerAsynchronously(this, 0, 6000);
 	}
 
 	@Override

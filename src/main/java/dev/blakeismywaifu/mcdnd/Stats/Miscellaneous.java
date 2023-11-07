@@ -33,7 +33,7 @@ public class Miscellaneous {
 		itemBuilder.lore(loreLine(this.speed.toString(), "ft. Walking Speed"));
 		itemBuilder.lore(Component.text("Inspiration", this.inspiration ? NamedTextColor.GREEN : NamedTextColor.RED));
 		itemBuilder.modelData(1);
-		return itemBuilder.getItem();
+		return itemBuilder.build();
 	}
 
 	private Component loreLine(String stat, String description) {

@@ -1,7 +1,9 @@
 package dev.blakeismywaifu.mcdnd.Commands;
 
+import dev.blakeismywaifu.mcdnd.Data.CharacterData;
 import dev.blakeismywaifu.mcdnd.Data.PlayerCache;
-import dev.blakeismywaifu.mcdnd.Tasks.FullUpdate;
+import dev.blakeismywaifu.mcdnd.Main;
+import dev.blakeismywaifu.mcdnd.Tasks.UpdatePlayer;
 import dev.blakeismywaifu.mcdnd.Utils.CommandResponse;
 import dev.blakeismywaifu.mcdnd.Utils.Utils;
 import net.kyori.adventure.text.Component;
@@ -15,19 +17,20 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Map;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
 public class Bind implements CommandExecutor {
 
-	Plugin plugin;
+	private final Main main;
+	private final PlayerCache playerCache;
 
-	public Bind(Plugin plugin) {
-		this.plugin = plugin;
+	public Bind(Main main) {
+		this.main = main;
+		this.playerCache = main.playerCache;
 	}
 
 	@Override
@@ -45,12 +48,13 @@ public class Bind implements CommandExecutor {
 
 		// View sub-command
 		if (args[0].equalsIgnoreCase("view")) {
-			Map<UUID, String> binds = PlayerCache.getBinds();
+			List<UUID> playerIds = this.playerCache.listPlayers();
 
-			ComponentBuilder<TextComponent, TextComponent.Builder> viewMessage = Component.text("\n[" + binds.size() + "] Bound Players: ", NamedTextColor.GREEN).toBuilder();
-			binds.forEach((key, value) -> {
-				HoverEvent<Component> hoverEvent = HoverEvent.showText(Component.text(value));
-				String playerName = Objects.requireNonNull(Bukkit.getPlayer(key)).getName();
+			ComponentBuilder<TextComponent, TextComponent.Builder> viewMessage = Component.text("\n[" + playerIds.size() + "] Bound Players: ", NamedTextColor.GREEN).toBuilder();
+			playerIds.forEach(playerId -> {
+				CharacterData characterData = this.playerCache.getPlayer(playerId);
+				HoverEvent<Component> hoverEvent = HoverEvent.showText(Component.text(characterData.characterId));
+				String playerName = Objects.requireNonNull(Bukkit.getPlayer(playerId)).getName();
 				Component name = Component.text(playerName + ", ").hoverEvent(hoverEvent);
 				viewMessage.append(name);
 			});
@@ -72,13 +76,12 @@ public class Bind implements CommandExecutor {
 
 		// Delete sub-command
 		if (args[0].equalsIgnoreCase("delete")) {
-			if (!PlayerCache.getBinds().containsKey(player.getUniqueId())) {
+			if (!this.playerCache.listPlayers().contains(player.getUniqueId())) {
 				CommandResponse.error(sender, "That player doesn't have a binding");
 				return false;
 			}
 
-			PlayerCache.putBind(player.getUniqueId(), null);
-			PlayerCache.putCache(player.getUniqueId(), null);
+			this.playerCache.removePlayer(player.getUniqueId());
 
 			player.getInventory().clear();
 			Objects.requireNonNull(player.getAttribute(Attribute.GENERIC_MAX_HEALTH)).setBaseValue(20);
@@ -94,9 +97,8 @@ public class Bind implements CommandExecutor {
 			return false;
 		}
 
-		PlayerCache.putBind(player.getUniqueId(), args[0]);
-		
-		new FullUpdate().runTaskAsynchronously(plugin);
+		this.playerCache.addPlayer(player.getUniqueId(), args[0]);
+		new UpdatePlayer(this.playerCache.getPlayer(player.getUniqueId())).runTaskAsynchronously(this.main);
 
 		CommandResponse.success(sender, "Successfully bound: " + player.getName() + " to " + args[0]);
 

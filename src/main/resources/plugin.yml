@@ -9,3 +9,7 @@ commands:
     usage: /bind <id|view|delete> [player]
     permission: dnd.bind
     permission-message: You don't have permission <permission>
+permissions:
+  dnd.player:
+    description: A player
+    default: true
