@@ -2,6 +2,7 @@ package dev.blakeismywaifu.mcdnd.Data;
 
 import dev.blakeismywaifu.mcdnd.Stats.Character;
 import dev.blakeismywaifu.mcdnd.Stats.Miscellaneous;
+import dev.blakeismywaifu.mcdnd.Stats.Skills;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.json.simple.JSONObject;
@@ -29,5 +30,6 @@ public class CharacterData {
 	public void updateItems() {
 		this.player.getInventory().setItem(9, new Character(this.json).getItem());
 		this.player.getInventory().setItem(10, new Miscellaneous(this.json).getItem());
+		this.player.getInventory().setItem(11, new Skills(this.json).getItem());
 	}
 }

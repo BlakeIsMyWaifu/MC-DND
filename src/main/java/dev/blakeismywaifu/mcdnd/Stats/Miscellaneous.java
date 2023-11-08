@@ -1,6 +1,6 @@
 package dev.blakeismywaifu.mcdnd.Stats;
 
-import dev.blakeismywaifu.mcdnd.Stats.Helpers.Modifiers;
+import dev.blakeismywaifu.mcdnd.Stats.Helpers.Modifier;
 import dev.blakeismywaifu.mcdnd.Utils.ItemBuilder;
 import dev.blakeismywaifu.mcdnd.Utils.Range;
 import net.kyori.adventure.text.Component;
@@ -56,7 +56,7 @@ public class Miscellaneous {
 		JSONObject weightSpeeds = (JSONObject) raceData.get("weightSpeeds");
 		JSONObject normal = (JSONObject) weightSpeeds.get("normal");
 		Long baseSpeed = (long) normal.get("walk");
-		Integer bonusSpeed = Modifiers.findBonusValues(json, "speed");
+		Integer bonusSpeed = Modifier.findBonusValues(json, "speed");
 		return (baseSpeed + bonusSpeed);
 	}
 }

@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class Modifiers {
+public class Modifier {
 
 	public @Nullable Long fixedValue;
 	public String id;
@@ -32,7 +32,7 @@ public class Modifiers {
 	public Long componentId;
 	public Long componentTypeId;
 
-	public Modifiers(JSONObject json) {
+	public Modifier(JSONObject json) {
 		Object fixedValue = json.get("fixedValue");
 		if (fixedValue != null) this.fixedValue = (Long) fixedValue;
 
@@ -86,7 +86,7 @@ public class Modifiers {
 		long out = 0L;
 		JSONArray feat = (JSONArray) allModifiers.get("feat");
 		for (Object value : feat) {
-			Modifiers modifiers = new Modifiers((JSONObject) value);
+			Modifier modifiers = new Modifier((JSONObject) value);
 			if (Objects.equals(modifiers.subType, subType)) {
 				if (modifiers.value == null) continue;
 				out += modifiers.value;
