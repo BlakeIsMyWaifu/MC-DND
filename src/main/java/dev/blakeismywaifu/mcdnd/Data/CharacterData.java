@@ -3,8 +3,10 @@ package dev.blakeismywaifu.mcdnd.Data;
 import dev.blakeismywaifu.mcdnd.Stats.Character;
 import dev.blakeismywaifu.mcdnd.Stats.Miscellaneous;
 import dev.blakeismywaifu.mcdnd.Stats.Skills;
+import dev.blakeismywaifu.mcdnd.Stats.Stats;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.json.simple.JSONObject;
 
 import java.util.UUID;
@@ -31,5 +33,10 @@ public class CharacterData {
 		this.player.getInventory().setItem(9, new Character(this.json).getItem());
 		this.player.getInventory().setItem(10, new Miscellaneous(this.json).getItem());
 		this.player.getInventory().setItem(11, new Skills(this.json).getItem());
+		int statIndex = 12;
+		for (ItemStack item : new Stats(this.json).getItems()) {
+			this.player.getInventory().setItem(statIndex, item);
+			statIndex++;
+		}
 	}
 }

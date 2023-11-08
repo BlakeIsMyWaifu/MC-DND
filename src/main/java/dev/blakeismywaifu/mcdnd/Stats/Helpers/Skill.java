@@ -1,7 +1,6 @@
 package dev.blakeismywaifu.mcdnd.Stats.Helpers;
 
 import dev.blakeismywaifu.mcdnd.Stats.Skills;
-import dev.blakeismywaifu.mcdnd.Stats.Stat;
 import org.json.simple.JSONObject;
 
 public class Skill {

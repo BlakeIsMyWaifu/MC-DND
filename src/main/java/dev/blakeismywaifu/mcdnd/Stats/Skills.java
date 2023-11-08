@@ -1,6 +1,7 @@
 package dev.blakeismywaifu.mcdnd.Stats;
 
 import dev.blakeismywaifu.mcdnd.Stats.Helpers.Skill;
+import dev.blakeismywaifu.mcdnd.Stats.Helpers.Stat;
 import dev.blakeismywaifu.mcdnd.Utils.ItemBuilder;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
