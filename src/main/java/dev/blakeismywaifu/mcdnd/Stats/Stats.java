@@ -5,24 +5,24 @@ import org.bukkit.inventory.ItemStack;
 import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Stats {
 
-	public final List<Stat> stats = new ArrayList<>();
+	public final Map<Stat.StatName, Stat> stats = new LinkedHashMap<>();
 
 	public Stats(JSONObject json) {
-		this.stats.add(new Stat(Stat.StatName.STRENGTH, json));
-		this.stats.add(new Stat(Stat.StatName.DEXTERITY, json));
-		this.stats.add(new Stat(Stat.StatName.CONSTITUTION, json));
-		this.stats.add(new Stat(Stat.StatName.INTELLIGENCE, json));
-		this.stats.add(new Stat(Stat.StatName.WISDOM, json));
-		this.stats.add(new Stat(Stat.StatName.CHARISMA, json));
+		Stat.StatName[] statOrder = {Stat.StatName.STRENGTH, Stat.StatName.DEXTERITY, Stat.StatName.CONSTITUTION, Stat.StatName.INTELLIGENCE, Stat.StatName.WISDOM, Stat.StatName.CHARISMA};
+		for (Stat.StatName stat : statOrder) {
+			this.stats.put(stat, new Stat(stat, json));
+		}
 	}
 
 	public List<ItemStack> getItems() {
 		List<ItemStack> out = new ArrayList<>();
-		stats.forEach(stat -> out.add(stat.getItem()));
+		stats.values().forEach(stat -> out.add(stat.getItem()));
 		return out;
 	}
 }

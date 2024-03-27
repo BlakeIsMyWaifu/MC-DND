@@ -18,7 +18,7 @@ public class Fetch {
 		this.uri = uri;
 	}
 
-	private static JSONObject JSONParse(String str) {
+	private JSONObject JSONParse(String str) {
 		JSONObject out = new JSONObject();
 		try {
 			out = (JSONObject) new JSONParser().parse(str);

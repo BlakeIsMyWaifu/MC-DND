@@ -8,16 +8,20 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.inventory.ItemStack;
 import org.json.simple.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
 public class Skills {
 
-	private final JSONObject json;
+	public Map<SkillName, Skill> skills = new HashMap<>();
 
 	public Skills(JSONObject json) {
-		this.json = json;
+		for (SkillName skillName : SkillName.values()) {
+			skills.put(skillName, new Skill(skillName, json));
+		}
 	}
 
 	public ItemStack getItem() {
@@ -25,7 +29,7 @@ public class Skills {
 		itemBuilder.modelData(2);
 
 		Stream.of(SkillName.values()).forEach(skillName -> {
-			Skill skill = new Skill(skillName, this.json);
+			Skill skill = skills.get(skillName);
 
 			Map<Skill.Proficiency, NamedTextColor> proficiencyColours = new HashMap<>();
 			proficiencyColours.put(Skill.Proficiency.NOT, NamedTextColor.GRAY);
@@ -55,6 +59,7 @@ public class Skills {
 		ATHLETICS("athletics", "Athletics", Stat.StatName.STRENGTH),
 		DECEPTION("deception", "Deception", Stat.StatName.CHARISMA),
 		HISTORY("history", "History", Stat.StatName.INTELLIGENCE),
+		INSIGHT("insight", "Insight", Stat.StatName.WISDOM),
 		INTIMIDATION("intimidation", "Intimidation", Stat.StatName.CHARISMA),
 		INVESTIGATION("investigation", "Investigation", Stat.StatName.INTELLIGENCE),
 		MEDICINE("medicine", "Medicine", Stat.StatName.WISDOM),
@@ -67,14 +72,28 @@ public class Skills {
 		STEALTH("stealth", "Stealth", Stat.StatName.DEXTERITY),
 		SURVIVAL("survival", "Survival", Stat.StatName.WISDOM);
 
+		public static final List<String> labelList = new ArrayList<>();
+		private static final Map<String, SkillName> labelMap = new HashMap<>();
+
+		static {
+			for (SkillName skillName : values()) {
+				labelMap.put(skillName.label, skillName);
+				labelList.add(skillName.label);
+			}
+		}
+
 		public final String name;
-		public final String label;
 		public final Stat.StatName stat;
+		public final String label;
 
 		SkillName(String label, String name, Stat.StatName stat) {
 			this.name = name;
 			this.label = label;
 			this.stat = stat;
+		}
+
+		public static SkillName findSkillName(String label) {
+			return labelMap.get(label);
 		}
 	}
 }

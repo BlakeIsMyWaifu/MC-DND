@@ -1,12 +1,13 @@
 package dev.blakeismywaifu.mcdnd.Stats.Helpers;
 
+import dev.blakeismywaifu.mcdnd.Data.CharacterData;
+import dev.blakeismywaifu.mcdnd.Stats.Skills;
 import org.jetbrains.annotations.Nullable;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 public class Modifier {
 
@@ -20,7 +21,7 @@ public class Modifier {
 	public @Nullable String restriction;
 	public @Nullable Long statId;
 	public Boolean requiresAttunement;
-	public @Nullable Long duration;
+	public @Nullable JSONObject duration;
 	public String friendlyTypeName;
 	public String friendlySubtypeName;
 	public Boolean isGranted;
@@ -45,13 +46,7 @@ public class Modifier {
 		if (entityTypeId != null) this.entityTypeId = (Long) entityTypeId;
 
 		String type = (String) json.get("type");
-		Map<String, Type> typeMap = new HashMap<>();
-		typeMap.put("bonus", Type.BONUS);
-		typeMap.put("proficiency", Type.PROFICIENCY);
-		typeMap.put("set-base", Type.BASE);
-		typeMap.put("advantage", Type.ADVANTAGE);
-		typeMap.put("set", Type.SET);
-		this.type = typeMap.get(type);
+		this.type = Type.findType(type);
 
 		this.subType = (String) json.get("subType");
 
@@ -64,7 +59,7 @@ public class Modifier {
 		this.requiresAttunement = (Boolean) json.get("requiresAttunement");
 
 		Object duration = json.get("duration");
-		if (duration != null) this.duration = (Long) duration;
+		if (duration != null) this.duration = (JSONObject) duration;
 
 		this.friendlyTypeName = (String) json.get("friendlyTypeName");
 		this.friendlySubtypeName = (String) json.get("friendlySubtypeName");
@@ -81,25 +76,83 @@ public class Modifier {
 		this.componentTypeId = (long) json.get("componentTypeId");
 	}
 
-	public static Integer findBonusValues(JSONObject json, String subType) {
-		JSONObject allModifiers = (JSONObject) json.get("modifiers");
-		long out = 0L;
-		JSONArray feat = (JSONArray) allModifiers.get("feat");
-		for (Object value : feat) {
-			Modifier modifiers = new Modifier((JSONObject) value);
-			if (Objects.equals(modifiers.subType, subType)) {
-				if (modifiers.value == null) continue;
-				out += modifiers.value;
-			}
-		}
-		return Math.toIntExact(out);
+	public void useModifier(CharacterData characterData) {
+		if (this.type == Type.BONUS) typeBonus(characterData);
+		if (this.type == Type.PROFICIENCY) typeProficiency(characterData);
 	}
 
-	public enum Type {
-		BONUS,
-		PROFICIENCY,
-		BASE,
-		ADVANTAGE,
-		SET
+	private void typeBonus(CharacterData characterData) {
+		switch (this.subType) {
+			case "speed": {
+				characterData.miscellaneous.speed += this.value;
+				break;
+			}
+			case "strength-score": {
+				assert this.value != null;
+				characterData.stats.stats.get(Stat.StatName.STRENGTH).addToTotal(this.value.intValue());
+				break;
+			}
+			case "dexterity-score": {
+				assert this.value != null;
+				characterData.stats.stats.get(Stat.StatName.DEXTERITY).addToTotal(this.value.intValue());
+				break;
+			}
+			case "constitution-score": {
+				assert this.value != null;
+				characterData.stats.stats.get(Stat.StatName.CONSTITUTION).addToTotal(this.value.intValue());
+				break;
+			}
+			case "intelligence-score": {
+				assert this.value != null;
+				characterData.stats.stats.get(Stat.StatName.INTELLIGENCE).addToTotal(this.value.intValue());
+				break;
+			}
+			case "wisdom-score": {
+				assert this.value != null;
+				characterData.stats.stats.get(Stat.StatName.WISDOM).addToTotal(this.value.intValue());
+				break;
+			}
+			case "charisma-score": {
+				assert this.value != null;
+				characterData.stats.stats.get(Stat.StatName.CHARISMA).addToTotal(this.value.intValue());
+				break;
+			}
+		}
+	}
+
+	private void typeProficiency(CharacterData characterData) {
+		if (Skills.SkillName.labelList.contains(this.subType)) {
+			Skills.SkillName skillName = Skills.SkillName.findSkillName(this.subType);
+			Skill skill = characterData.skills.skills.get(skillName);
+			skill.proficiency = Skill.Proficiency.PROFICIENT;
+		}
+	}
+
+	private enum Type {
+		BONUS("bonus"),
+		PROFICIENCY("proficiency"),
+		SET_BASE("set-base"),
+		ADVANTAGE("advantage"),
+		SET("set"),
+		_UNKNOWN("unknown");
+
+		private static final Map<String, Type> labelMap = new HashMap<>();
+
+		static {
+			for (Type type : values()) {
+				labelMap.put(type.label, type);
+			}
+		}
+
+		private final String label;
+
+		Type(String label) {
+			this.label = label;
+		}
+
+		public static Type findType(String label) {
+			Type type = labelMap.get(label);
+			return type != null ? type : Type._UNKNOWN;
+		}
 	}
 }

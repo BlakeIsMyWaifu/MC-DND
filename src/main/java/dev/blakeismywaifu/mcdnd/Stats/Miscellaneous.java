@@ -1,6 +1,7 @@
 package dev.blakeismywaifu.mcdnd.Stats;
 
-import dev.blakeismywaifu.mcdnd.Stats.Helpers.Modifier;
+import dev.blakeismywaifu.mcdnd.Data.CharacterData;
+import dev.blakeismywaifu.mcdnd.Stats.Helpers.Stat;
 import dev.blakeismywaifu.mcdnd.Utils.ItemBuilder;
 import dev.blakeismywaifu.mcdnd.Utils.Range;
 import net.kyori.adventure.text.Component;
@@ -16,13 +17,12 @@ public class Miscellaneous {
 	public Long proficiency;
 	public Long speed;
 	public Boolean inspiration;
-	public Long initiative;
+	public Integer initiative;
 
-	public Miscellaneous(JSONObject json) {
+	public Miscellaneous(JSONObject json, CharacterData characterData) {
 		this.proficiency = getProficiency(json);
 		this.speed = getSpeed(json);
-		// TODO - need dex stat
-		this.initiative = 1L;
+		this.initiative = characterData.stats.stats.get(Stat.StatName.DEXTERITY).modifier;
 		this.inspiration = (Boolean) json.get("inspiration");
 	}
 
@@ -55,8 +55,6 @@ public class Miscellaneous {
 		JSONObject raceData = (JSONObject) json.get("race");
 		JSONObject weightSpeeds = (JSONObject) raceData.get("weightSpeeds");
 		JSONObject normal = (JSONObject) weightSpeeds.get("normal");
-		Long baseSpeed = (long) normal.get("walk");
-		Integer bonusSpeed = Modifier.findBonusValues(json, "speed");
-		return (baseSpeed + bonusSpeed);
+		return (Long) normal.get("walk");
 	}
 }

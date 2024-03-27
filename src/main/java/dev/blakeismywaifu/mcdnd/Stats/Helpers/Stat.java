@@ -8,26 +8,27 @@ import org.json.simple.JSONObject;
 public class Stat {
 
 	public final StatName statName;
-	private final JSONObject json;
-	public Integer total;
 	public Integer modifier;
-	public Long base;
-	public Long racial = 0L;
-	public Long ability = 0L;
-	public Long misc = 0L;
-	public Long stacking = 0L;
-	public Long set = 0L;
-	public Long bonus;
-	public Long override;
+	public Integer base;
+	public Integer bonus;
+	public Integer override;
+	public Integer total = 0;
 
 	public Stat(StatName statName, JSONObject json) {
-		this.json = json;
 		this.statName = statName;
-		this.base = getStatValue("stats");
-		this.bonus = getStatValue("bonusStats");
-		this.override = getStatValue("overrideStats");
+		this.base = getStatValue(json, "stats");
+		// ? no idea what bonus is
+		this.bonus = getStatValue(json, "bonusStats");
+		this.override = getStatValue(json, "overrideStats");
 
-		this.total = Math.toIntExact(this.override == 0L ? this.base : this.override);
+		addToTotal(this.base);
+	}
+
+	public void addToTotal(Integer value) {
+		this.total += value;
+		if (this.override != 0) {
+			this.total = this.override;
+		}
 		this.modifier = (this.total - 10) / 2;
 	}
 
@@ -39,12 +40,12 @@ public class Stat {
 		return item.build();
 	}
 
-	private Long getStatValue(String key) {
-		JSONArray statsArray = (JSONArray) this.json.get(key);
+	private Integer getStatValue(JSONObject json, String key) {
+		JSONArray statsArray = (JSONArray) json.get(key);
 		JSONObject statObject = (JSONObject) statsArray.get(this.statName.index);
 		Object value = statObject.get("value");
-		if (value == null) return 0L;
-		return (Long) statObject.get("value");
+		if (value == null) return 0;
+		return Math.toIntExact((Long) statObject.get("value"));
 	}
 
 	public enum StatName {
