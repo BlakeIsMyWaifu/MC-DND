@@ -3,6 +3,7 @@ package dev.blakeismywaifu.mcdnd;
 import dev.blakeismywaifu.mcdnd.Commands.Bind;
 import dev.blakeismywaifu.mcdnd.Data.PlayerCache;
 import dev.blakeismywaifu.mcdnd.Tasks.FullUpdateAll;
+import dev.blakeismywaifu.mcdnd.Tasks.QuickUpdateAll;
 import dev.blakeismywaifu.mcdnd.Utils.Console;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.PluginCommand;
@@ -27,6 +28,7 @@ public final class Main extends JavaPlugin {
 		});
 
 		new FullUpdateAll(this).runTaskTimerAsynchronously(this, 0, 6000);
+		new QuickUpdateAll(this).runTaskTimerAsynchronously(this, 0, 40);
 	}
 
 	@Override
