@@ -1,5 +1,6 @@
 package dev.blakeismywaifu.mcdnd.Stats;
 
+import dev.blakeismywaifu.mcdnd.Stats.Helpers.Classes;
 import dev.blakeismywaifu.mcdnd.Utils.ItemBuilder;
 import org.bukkit.inventory.ItemStack;
 import org.json.simple.JSONArray;
@@ -13,8 +14,8 @@ public class Character {
 	public String name;
 	public String gender;
 	public String race;
-	public String classes;
-	public Long level;
+	public Classes classes;
+	public Integer level;
 
 	public Character(JSONObject data) {
 		this.name = (String) data.get("name");
@@ -27,15 +28,16 @@ public class Character {
 		JSONArray classData = (JSONArray) data.get("classes");
 		JSONObject mainClass = (JSONObject) classData.get(0);
 		JSONObject mainClassDefinition = (JSONObject) mainClass.get("definition");
-		this.classes = (String) mainClassDefinition.get("name");
-		this.level = (Long) mainClass.get("level");
+		this.classes = Classes.findClass((String) mainClassDefinition.get("name"));
+		Long levelLong = (Long) mainClass.get("level");
+		this.level = levelLong.intValue();
 	}
 
 	public ItemStack getItem() {
 		List<String> info = new ArrayList<>();
 		if (this.gender != null) info.add(this.gender);
 		info.add(this.race);
-		info.add(this.classes);
+		info.add(this.classes.name);
 		ItemBuilder itemBuilder = new ItemBuilder(this.name);
 		itemBuilder.lore(String.join(", ", info));
 		itemBuilder.lore("Level " + this.level);

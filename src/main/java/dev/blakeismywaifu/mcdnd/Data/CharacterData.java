@@ -2,9 +2,7 @@ package dev.blakeismywaifu.mcdnd.Data;
 
 import dev.blakeismywaifu.mcdnd.Stats.Character;
 import dev.blakeismywaifu.mcdnd.Stats.Helpers.Modifier;
-import dev.blakeismywaifu.mcdnd.Stats.Miscellaneous;
-import dev.blakeismywaifu.mcdnd.Stats.Skills;
-import dev.blakeismywaifu.mcdnd.Stats.Stats;
+import dev.blakeismywaifu.mcdnd.Stats.*;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -19,6 +17,7 @@ public class CharacterData {
 	public final Player player;
 
 	public Character character;
+	public HitPoints hitPoints;
 	public Miscellaneous miscellaneous;
 	public Skills skills;
 	public Stats stats;
@@ -34,9 +33,11 @@ public class CharacterData {
 		this.character = new Character(json);
 		this.skills = new Skills(json);
 		this.stats = new Stats(json);
-		// ! miscellaneous must be loaded after stats
-		this.miscellaneous = new Miscellaneous(json, this);
 
+		// must be loaded after stats
+		this.hitPoints = new HitPoints(json, this);
+		this.miscellaneous = new Miscellaneous(json, this);
+		
 		readModifiers((JSONObject) json.get("modifiers"));
 	}
 

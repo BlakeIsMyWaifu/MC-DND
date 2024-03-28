@@ -1,5 +1,6 @@
 package dev.blakeismywaifu.mcdnd.Tasks;
 
+import dev.blakeismywaifu.mcdnd.Data.CharacterData;
 import dev.blakeismywaifu.mcdnd.Main;
 import dev.blakeismywaifu.mcdnd.Utils.TestPlayer;
 import net.kyori.adventure.text.Component;
@@ -27,9 +28,13 @@ public class QuickUpdateAll extends BukkitRunnable {
 			if (!new TestPlayer(player).isPlayer) return;
 			assert player != null;
 
+			CharacterData characterData = this.main.playerCache.getPlayer(playerId);
+
 			player.setSaturation(20f);
 			player.setFoodLevel(20);
-			player.sendActionBar(Component.text("Health: 10 / 10", NamedTextColor.RED));
+
+			if (characterData.hitPoints.maxHitPoints == null) return;
+			player.sendActionBar(Component.text("Health: " + characterData.hitPoints.currentHitPoints + " / " + characterData.hitPoints.maxHitPoints, NamedTextColor.RED));
 		});
 	}
 }

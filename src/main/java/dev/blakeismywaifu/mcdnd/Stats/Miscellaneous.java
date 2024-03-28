@@ -41,14 +41,14 @@ public class Miscellaneous {
 	}
 
 	private Long getProficiency(JSONObject json) {
-		Long level = new Character(json).level;
+		Integer level = new Character(json).level;
 		Map<Range, Integer> map = new HashMap<>();
 		map.put(new Range(1, 4), 2);
 		map.put(new Range(5, 8), 3);
 		map.put(new Range(9, 12), 4);
 		map.put(new Range(13, 16), 5);
 		map.put(new Range(17, 20), 6);
-		return Long.valueOf(Range.contains(map, Math.toIntExact(level)));
+		return Long.valueOf(Range.contains(map, level));
 	}
 
 	private Long getSpeed(JSONObject json) {
