@@ -27,13 +27,16 @@ public class Modifiers {
 	public void updateData(ModifierCategory modifierCategory, CharacterData characterData) {
 		switch (modifierCategory) {
 			case STATS:
-				modifiers.computeIfAbsent(ModifierCategory.STATS, k -> new ArrayList<>()).forEach(m -> characterData.stats.updateData(m));
+				modifiers.computeIfAbsent(ModifierCategory.STATS, k -> new ArrayList<>()).forEach(modifier -> characterData.stats.updateData(modifier));
 				break;
 			case SKILLS:
-				modifiers.computeIfAbsent(ModifierCategory.SKILLS, k -> new ArrayList<>()).forEach(m -> characterData.skills.updateData(m));
+				modifiers.computeIfAbsent(ModifierCategory.SKILLS, k -> new ArrayList<>()).forEach(modifier -> characterData.skills.updateData(modifier));
 				break;
 			case MISCELLANEOUS:
-				modifiers.computeIfAbsent(ModifierCategory.MISCELLANEOUS, k -> new ArrayList<>()).forEach(m -> characterData.miscellaneous.updateData(m));
+				modifiers.computeIfAbsent(ModifierCategory.MISCELLANEOUS, k -> new ArrayList<>()).forEach(modifier -> characterData.miscellaneous.updateData(modifier));
+				break;
+			case HITPOINTS:
+				modifiers.computeIfAbsent(ModifierCategory.HITPOINTS, k -> new ArrayList<>()).forEach(modifier -> characterData.hitPoints.updateData(modifier, characterData));
 				break;
 		}
 	}
@@ -60,12 +63,16 @@ public class Modifiers {
 			case "charisma-score":
 				addModifier(ModifierCategory.STATS, modifier);
 				break;
+			case "hit-points-per-level":
+				addModifier(ModifierCategory.HITPOINTS, modifier);
+				break;
 		}
 	}
 
 	public enum ModifierCategory {
 		STATS,
 		SKILLS,
-		MISCELLANEOUS
+		MISCELLANEOUS,
+		HITPOINTS
 	}
 }

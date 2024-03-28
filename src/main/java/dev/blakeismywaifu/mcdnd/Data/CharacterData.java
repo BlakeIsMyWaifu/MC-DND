@@ -40,6 +40,7 @@ public class CharacterData {
 		modifiers.updateData(Modifiers.ModifierCategory.SKILLS, this);
 
 		this.hitPoints = new HitPoints(json, this.stats, this.character);
+		modifiers.updateData(Modifiers.ModifierCategory.HITPOINTS, this);
 
 		this.miscellaneous = new Miscellaneous(json, this.stats, this.character);
 		modifiers.updateData(Modifiers.ModifierCategory.MISCELLANEOUS, this);

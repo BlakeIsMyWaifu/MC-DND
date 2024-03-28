@@ -1,6 +1,8 @@
 package dev.blakeismywaifu.mcdnd.Stats;
 
+import dev.blakeismywaifu.mcdnd.Data.CharacterData;
 import dev.blakeismywaifu.mcdnd.Stats.Helpers.DNDClass;
+import dev.blakeismywaifu.mcdnd.Stats.Helpers.Modifier;
 import dev.blakeismywaifu.mcdnd.Stats.Helpers.Stat;
 import org.json.simple.JSONObject;
 
@@ -49,7 +51,6 @@ public class HitPoints {
 		}
 
 		// TODO add temp health
-		// TODO add tough feat, hill dwarf, draconic sorcerer
 
 		this.maxHitPoints = totalHitPoints;
 
@@ -86,5 +87,27 @@ public class HitPoints {
 		}
 
 		return bonusHitPoints;
+	}
+
+	public void updateData(Modifier modifier, CharacterData characterData) {
+		int bonusHitPoints = 0;
+
+		switch (modifier.componentId.intValue()) {
+			case 49: // Tough Feat
+				bonusHitPoints += 2 * characterData.character.totalLevel;
+				break;
+			case 122: // Hill Dwarf Racial
+				bonusHitPoints += characterData.character.totalLevel;
+				break;
+			case 377: // Draconic Sorcerer Subclass
+				for (DNDClass dndClass : characterData.character.classes) {
+					if (dndClass.className != DNDClass.ClassName.SORCERER) continue;
+					bonusHitPoints += dndClass.level;
+				}
+				break;
+		}
+
+		this.maxHitPoints += bonusHitPoints;
+		this.currentHitPoints += bonusHitPoints;
 	}
 }

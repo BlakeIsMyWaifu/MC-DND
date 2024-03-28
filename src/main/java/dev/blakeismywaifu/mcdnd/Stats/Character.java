@@ -13,7 +13,7 @@ import java.util.List;
 public class Character {
 
 	public final String name;
-	public final String gender;
+	public final @Nullable String gender;
 	public final String race;
 	public final List<DNDClass> classes = new ArrayList<>();
 	public final Integer totalLevel;
@@ -45,7 +45,8 @@ public class Character {
 			String subclass = dndClass.subclass != null ? dndClass.subclass : "no subclass";
 			itemBuilder.lore(dndClass.className.string + " " + dndClass.level + " (" + subclass + ")");
 		});
-		itemBuilder.lore(this.gender + ", " + this.race);
+		String gender = this.gender != null ? this.gender : "No Gender";
+		itemBuilder.lore(gender + ", " + this.race);
 		return itemBuilder.build();
 	}
 }
