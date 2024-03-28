@@ -33,7 +33,7 @@ public class QuickUpdateAll extends BukkitRunnable {
 			player.setSaturation(20f);
 			player.setFoodLevel(20);
 
-			if (characterData.hitPoints.maxHitPoints == null) return;
+			if (characterData.hitPoints == null) return;
 			player.sendActionBar(Component.text("Health: " + characterData.hitPoints.currentHitPoints + " / " + characterData.hitPoints.maxHitPoints, NamedTextColor.RED));
 		});
 	}

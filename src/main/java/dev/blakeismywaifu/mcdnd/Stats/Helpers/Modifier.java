@@ -1,7 +1,5 @@
 package dev.blakeismywaifu.mcdnd.Stats.Helpers;
 
-import dev.blakeismywaifu.mcdnd.Data.CharacterData;
-import dev.blakeismywaifu.mcdnd.Stats.Skills;
 import org.jetbrains.annotations.Nullable;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -15,7 +13,7 @@ public class Modifier {
 	public String id;
 	public @Nullable Long entityId;
 	public @Nullable Long entityTypeId;
-	public Type type;
+	public ModifierType type;
 	public String subType;
 	//	public dice
 	public @Nullable String restriction;
@@ -46,7 +44,7 @@ public class Modifier {
 		if (entityTypeId != null) this.entityTypeId = (Long) entityTypeId;
 
 		String type = (String) json.get("type");
-		this.type = Type.findType(type);
+		this.type = ModifierType.findType(type);
 
 		this.subType = (String) json.get("subType");
 
@@ -76,59 +74,7 @@ public class Modifier {
 		this.componentTypeId = (long) json.get("componentTypeId");
 	}
 
-	public void useModifier(CharacterData characterData) {
-		if (this.type == Type.BONUS) typeBonus(characterData);
-		if (this.type == Type.PROFICIENCY) typeProficiency(characterData);
-	}
-
-	private void typeBonus(CharacterData characterData) {
-		switch (this.subType) {
-			case "speed": {
-				characterData.miscellaneous.speed += this.value;
-				break;
-			}
-			case "strength-score": {
-				assert this.value != null;
-				characterData.stats.stats.get(Stat.StatName.STRENGTH).addToTotal(this.value.intValue());
-				break;
-			}
-			case "dexterity-score": {
-				assert this.value != null;
-				characterData.stats.stats.get(Stat.StatName.DEXTERITY).addToTotal(this.value.intValue());
-				break;
-			}
-			case "constitution-score": {
-				assert this.value != null;
-				characterData.stats.stats.get(Stat.StatName.CONSTITUTION).addToTotal(this.value.intValue());
-				break;
-			}
-			case "intelligence-score": {
-				assert this.value != null;
-				characterData.stats.stats.get(Stat.StatName.INTELLIGENCE).addToTotal(this.value.intValue());
-				break;
-			}
-			case "wisdom-score": {
-				assert this.value != null;
-				characterData.stats.stats.get(Stat.StatName.WISDOM).addToTotal(this.value.intValue());
-				break;
-			}
-			case "charisma-score": {
-				assert this.value != null;
-				characterData.stats.stats.get(Stat.StatName.CHARISMA).addToTotal(this.value.intValue());
-				break;
-			}
-		}
-	}
-
-	private void typeProficiency(CharacterData characterData) {
-		if (Skills.SkillName.labelList.contains(this.subType)) {
-			Skills.SkillName skillName = Skills.SkillName.findSkillName(this.subType);
-			Skill skill = characterData.skills.skills.get(skillName);
-			skill.proficiency = Skill.Proficiency.PROFICIENT;
-		}
-	}
-
-	private enum Type {
+	public enum ModifierType {
 		BONUS("bonus"),
 		PROFICIENCY("proficiency"),
 		SET_BASE("set-base"),
@@ -136,23 +82,23 @@ public class Modifier {
 		SET("set"),
 		_UNKNOWN("unknown");
 
-		private static final Map<String, Type> labelMap = new HashMap<>();
+		private static final Map<String, ModifierType> labelMap = new HashMap<>();
 
 		static {
-			for (Type type : values()) {
+			for (ModifierType type : values()) {
 				labelMap.put(type.label, type);
 			}
 		}
 
 		private final String label;
 
-		Type(String label) {
+		ModifierType(String label) {
 			this.label = label;
 		}
 
-		public static Type findType(String label) {
-			Type type = labelMap.get(label);
-			return type != null ? type : Type._UNKNOWN;
+		public static ModifierType findType(String label) {
+			ModifierType type = labelMap.get(label);
+			return type != null ? type : ModifierType._UNKNOWN;
 		}
 	}
 }

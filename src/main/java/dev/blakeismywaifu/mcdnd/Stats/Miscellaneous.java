@@ -1,6 +1,6 @@
 package dev.blakeismywaifu.mcdnd.Stats;
 
-import dev.blakeismywaifu.mcdnd.Data.CharacterData;
+import dev.blakeismywaifu.mcdnd.Stats.Helpers.Modifier;
 import dev.blakeismywaifu.mcdnd.Stats.Helpers.Stat;
 import dev.blakeismywaifu.mcdnd.Utils.ItemBuilder;
 import dev.blakeismywaifu.mcdnd.Utils.Range;
@@ -11,6 +11,7 @@ import org.json.simple.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class Miscellaneous {
 
@@ -19,10 +20,10 @@ public class Miscellaneous {
 	public Boolean inspiration;
 	public Integer initiative;
 
-	public Miscellaneous(JSONObject json, CharacterData characterData) {
+	public Miscellaneous(JSONObject json, Stats stats) {
 		this.proficiency = getProficiency(json);
 		this.speed = getSpeed(json);
-		this.initiative = characterData.stats.stats.get(Stat.StatName.DEXTERITY).modifier;
+		this.initiative = stats.stats.get(Stat.StatName.DEXTERITY).modifier;
 		this.inspiration = (Boolean) json.get("inspiration");
 	}
 
@@ -56,5 +57,11 @@ public class Miscellaneous {
 		JSONObject weightSpeeds = (JSONObject) raceData.get("weightSpeeds");
 		JSONObject normal = (JSONObject) weightSpeeds.get("normal");
 		return (Long) normal.get("walk");
+	}
+
+	public void updateData(Modifier modifier) {
+		if (Objects.equals(modifier.subType, "speed")) {
+			this.speed += modifier.value;
+		}
 	}
 }

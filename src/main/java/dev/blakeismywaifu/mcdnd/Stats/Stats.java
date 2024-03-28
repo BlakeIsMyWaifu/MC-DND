@@ -1,5 +1,6 @@
 package dev.blakeismywaifu.mcdnd.Stats;
 
+import dev.blakeismywaifu.mcdnd.Stats.Helpers.Modifier;
 import dev.blakeismywaifu.mcdnd.Stats.Helpers.Stat;
 import org.bukkit.inventory.ItemStack;
 import org.json.simple.JSONObject;
@@ -24,5 +25,33 @@ public class Stats {
 		List<ItemStack> out = new ArrayList<>();
 		stats.values().forEach(stat -> out.add(stat.getItem()));
 		return out;
+	}
+
+	public void updateData(Modifier modifier) {
+		Stat.StatName stat = null;
+
+		switch (modifier.subType) {
+			case "strength-score":
+				stat = Stat.StatName.STRENGTH;
+				break;
+			case "dexterity-score":
+				stat = Stat.StatName.DEXTERITY;
+				break;
+			case "constitution-score":
+				stat = Stat.StatName.CONSTITUTION;
+				break;
+			case "intelligence-score":
+				stat = Stat.StatName.INTELLIGENCE;
+				break;
+			case "wisdom-score":
+				stat = Stat.StatName.WISDOM;
+				break;
+			case "charisma-score":
+				stat = Stat.StatName.CHARISMA;
+				break;
+		}
+
+		assert modifier.value != null;
+		this.stats.get(stat).addToTotal(modifier.value.intValue());
 	}
 }

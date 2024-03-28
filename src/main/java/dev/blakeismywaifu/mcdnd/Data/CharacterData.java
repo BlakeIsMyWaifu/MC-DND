@@ -1,12 +1,11 @@
 package dev.blakeismywaifu.mcdnd.Data;
 
 import dev.blakeismywaifu.mcdnd.Stats.Character;
-import dev.blakeismywaifu.mcdnd.Stats.Helpers.Modifier;
+import dev.blakeismywaifu.mcdnd.Stats.Helpers.Modifiers;
 import dev.blakeismywaifu.mcdnd.Stats.*;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.util.UUID;
@@ -30,15 +29,20 @@ public class CharacterData {
 	public void updateData() {
 		JSONObject json = new Fetch("https://character-service.dndbeyond.com/character/v5/character/" + this.characterId).getData();
 
-		this.character = new Character(json);
-		this.skills = new Skills(json);
-		this.stats = new Stats(json);
+		Modifiers modifiers = new Modifiers(json);
 
-		// must be loaded after stats
-		this.hitPoints = new HitPoints(json, this);
-		this.miscellaneous = new Miscellaneous(json, this);
-		
-		readModifiers((JSONObject) json.get("modifiers"));
+		this.character = new Character(json);
+
+		this.stats = new Stats(json);
+		modifiers.updateData(Modifiers.ModifierCategory.STATS, this);
+
+		this.skills = new Skills(json);
+		modifiers.updateData(Modifiers.ModifierCategory.SKILLS, this);
+
+		this.hitPoints = new HitPoints(json, this.stats, this.character);
+
+		this.miscellaneous = new Miscellaneous(json, this.stats);
+		modifiers.updateData(Modifiers.ModifierCategory.MISCELLANEOUS, this);
 	}
 
 	public void updateItems() {
@@ -49,17 +53,6 @@ public class CharacterData {
 		for (ItemStack item : this.stats.getItems()) {
 			this.player.getInventory().setItem(statIndex, item);
 			statIndex++;
-		}
-	}
-
-	private void readModifiers(JSONObject json) {
-		String[] modifierTypes = {"race", "class", "background", "item", "feat"};
-		for (String modifierType : modifierTypes) {
-			JSONArray modifiers = (JSONArray) json.get(modifierType);
-			for (Object modifierJson : modifiers) {
-				Modifier modifier = new Modifier((JSONObject) modifierJson);
-				modifier.useModifier(this);
-			}
 		}
 	}
 }

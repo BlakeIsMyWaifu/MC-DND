@@ -1,6 +1,5 @@
 package dev.blakeismywaifu.mcdnd.Stats;
 
-import dev.blakeismywaifu.mcdnd.Data.CharacterData;
 import dev.blakeismywaifu.mcdnd.Stats.Helpers.Stat;
 import org.json.simple.JSONObject;
 
@@ -9,10 +8,10 @@ public class HitPoints {
 	public Integer maxHitPoints;
 	public Integer currentHitPoints;
 
-	public HitPoints(JSONObject data, CharacterData characterData) {
-		int constitutionModifier = characterData.stats.stats.get(Stat.StatName.CONSTITUTION).modifier;
+	public HitPoints(JSONObject data, Stats stats, Character character) {
+		int constitutionModifier = stats.stats.get(Stat.StatName.CONSTITUTION).modifier;
 		int baseHitPoints = constitutionModifier;
-		switch (characterData.character.classes) {
+		switch (character.classes) {
 			case WIZARD:
 			case SORCERER:
 				baseHitPoints += 6;
@@ -36,9 +35,9 @@ public class HitPoints {
 				break;
 		}
 
-		int level = characterData.character.level - 1;
+		int level = character.level - 1;
 		int bonusHitPoints = constitutionModifier * level;
-		switch (characterData.character.classes) {
+		switch (character.classes) {
 			case WIZARD:
 			case SORCERER:
 				bonusHitPoints += 4 * level;

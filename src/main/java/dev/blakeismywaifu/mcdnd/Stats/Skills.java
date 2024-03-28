@@ -1,5 +1,6 @@
 package dev.blakeismywaifu.mcdnd.Stats;
 
+import dev.blakeismywaifu.mcdnd.Stats.Helpers.Modifier;
 import dev.blakeismywaifu.mcdnd.Stats.Helpers.Skill;
 import dev.blakeismywaifu.mcdnd.Stats.Helpers.Stat;
 import dev.blakeismywaifu.mcdnd.Utils.ItemBuilder;
@@ -50,6 +51,14 @@ public class Skills {
 		});
 
 		return itemBuilder.build();
+	}
+
+	public void updateData(Modifier modifier) {
+		if (Skills.SkillName.labelList.contains(modifier.subType)) {
+			Skills.SkillName skillName = Skills.SkillName.findSkillName(modifier.subType);
+			Skill skill = this.skills.get(skillName);
+			skill.proficiency = Skill.Proficiency.PROFICIENT;
+		}
 	}
 
 	public enum SkillName {
