@@ -1,8 +1,9 @@
 package dev.blakeismywaifu.mcdnd.Stats;
 
-import dev.blakeismywaifu.mcdnd.Stats.Helpers.Classes;
+import dev.blakeismywaifu.mcdnd.Stats.Helpers.DNDClass;
 import dev.blakeismywaifu.mcdnd.Utils.ItemBuilder;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.Nullable;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -11,11 +12,11 @@ import java.util.List;
 
 public class Character {
 
-	public String name;
-	public String gender;
-	public String race;
-	public Classes classes;
-	public Integer level;
+	public final String name;
+	public final String gender;
+	public final String race;
+	public final List<DNDClass> classes = new ArrayList<>();
+	public final Integer totalLevel;
 
 	public Character(JSONObject data) {
 		this.name = (String) data.get("name");
@@ -24,23 +25,27 @@ public class Character {
 		JSONObject raceData = (JSONObject) data.get("race");
 		this.race = (String) raceData.get("fullName");
 
-		// TODO only tracks main class
-		JSONArray classData = (JSONArray) data.get("classes");
-		JSONObject mainClass = (JSONObject) classData.get(0);
-		JSONObject mainClassDefinition = (JSONObject) mainClass.get("definition");
-		this.classes = Classes.findClass((String) mainClassDefinition.get("name"));
-		Long levelLong = (Long) mainClass.get("level");
-		this.level = levelLong.intValue();
+		JSONArray classesData = (JSONArray) data.get("classes");
+		for (Object classData : classesData) {
+			JSONObject classJson = (JSONObject) classData;
+			JSONObject classDefinition = (JSONObject) classJson.get("definition");
+			String className = (String) classDefinition.get("name");
+			Long levelLong = (Long) classJson.get("level");
+			JSONObject subclassDefinition = (JSONObject) classJson.get("subclassDefinition");
+			@Nullable String subclassName = subclassDefinition != null ? (String) subclassDefinition.get("name") : null;
+			classes.add(new DNDClass(className, levelLong.intValue(), subclassName));
+		}
+
+		this.totalLevel = this.classes.stream().mapToInt(dndClass -> dndClass.level).sum();
 	}
 
 	public ItemStack getItem() {
-		List<String> info = new ArrayList<>();
-		if (this.gender != null) info.add(this.gender);
-		info.add(this.race);
-		info.add(this.classes.name);
 		ItemBuilder itemBuilder = new ItemBuilder(this.name);
-		itemBuilder.lore(String.join(", ", info));
-		itemBuilder.lore("Level " + this.level);
+		this.classes.forEach(dndClass -> {
+			String subclass = dndClass.subclass != null ? dndClass.subclass : "no subclass";
+			itemBuilder.lore(dndClass.className.string + " " + dndClass.level + " (" + subclass + ")");
+		});
+		itemBuilder.lore(this.gender + ", " + this.race);
 		return itemBuilder.build();
 	}
 }

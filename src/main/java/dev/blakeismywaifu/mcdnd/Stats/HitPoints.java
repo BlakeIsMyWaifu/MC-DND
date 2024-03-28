@@ -1,20 +1,27 @@
 package dev.blakeismywaifu.mcdnd.Stats;
 
+import dev.blakeismywaifu.mcdnd.Stats.Helpers.DNDClass;
 import dev.blakeismywaifu.mcdnd.Stats.Helpers.Stat;
 import org.json.simple.JSONObject;
 
+import java.util.List;
+
 public class HitPoints {
 
+	private final Integer constitutionModifier;
 	public Integer maxHitPoints;
 	public Integer currentHitPoints;
 
 	public HitPoints(JSONObject data, Stats stats, Character character) {
-		int constitutionModifier = stats.stats.get(Stat.StatName.CONSTITUTION).modifier;
-		int baseHitPoints = constitutionModifier;
-		switch (character.classes) {
+		this.constitutionModifier = stats.stats.get(Stat.StatName.CONSTITUTION).modifier;
+
+		int totalHitPoints = 0;
+		totalHitPoints += this.constitutionModifier;
+
+		switch (character.classes.get(0).className) {
 			case WIZARD:
 			case SORCERER:
-				baseHitPoints += 6;
+				totalHitPoints += 6;
 				break;
 			case ARTIFICER:
 			case BARD:
@@ -23,21 +30,38 @@ public class HitPoints {
 			case MONK:
 			case ROGUE:
 			case WARLOCK:
-				baseHitPoints += 8;
+				totalHitPoints += 8;
 				break;
 			case FIGHTER:
 			case PALADIN:
 			case RANGER:
-				baseHitPoints += 10;
+				totalHitPoints += 10;
 				break;
 			case BARBARIAN:
-				baseHitPoints += 12;
+				totalHitPoints += 12;
 				break;
 		}
 
-		int level = character.level - 1;
-		int bonusHitPoints = constitutionModifier * level;
-		switch (character.classes) {
+		List<DNDClass> classes = character.classes;
+		for (int i = 0; i < classes.size(); i++) {
+			DNDClass dndClass = classes.get(i);
+			totalHitPoints += calculateBonusHitPoints(dndClass, i == 0);
+		}
+
+		// TODO add temp health
+		// TODO add tough feat, hill dwarf, draconic sorcerer
+
+		this.maxHitPoints = totalHitPoints;
+
+		Long removedHitPoints = (Long) data.get("removedHitPoints");
+		this.currentHitPoints = Math.toIntExact(this.maxHitPoints - removedHitPoints);
+	}
+
+	private int calculateBonusHitPoints(DNDClass dndClass, boolean isPrimary) {
+		int level = isPrimary ? dndClass.level - 1 : dndClass.level;
+		int bonusHitPoints = this.constitutionModifier * level;
+
+		switch (dndClass.className) {
 			case WIZARD:
 			case SORCERER:
 				bonusHitPoints += 4 * level;
@@ -61,12 +85,6 @@ public class HitPoints {
 				break;
 		}
 
-		// TODO add multi-classing
-		// TODO add temp health
-
-		this.maxHitPoints = baseHitPoints + bonusHitPoints;
-
-		Long removedHitPoints = (Long) data.get("removedHitPoints");
-		this.currentHitPoints = Math.toIntExact(this.maxHitPoints - removedHitPoints);
+		return bonusHitPoints;
 	}
 }

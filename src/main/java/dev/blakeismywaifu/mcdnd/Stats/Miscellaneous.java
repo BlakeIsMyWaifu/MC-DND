@@ -15,13 +15,13 @@ import java.util.Objects;
 
 public class Miscellaneous {
 
-	public Long proficiency;
-	public Long speed;
+	public Integer proficiency;
+	public Integer speed;
 	public Boolean inspiration;
 	public Integer initiative;
 
-	public Miscellaneous(JSONObject json, Stats stats) {
-		this.proficiency = getProficiency(json);
+	public Miscellaneous(JSONObject json, Stats stats, Character character) {
+		this.proficiency = getProficiency(character);
 		this.speed = getSpeed(json);
 		this.initiative = stats.stats.get(Stat.StatName.DEXTERITY).modifier;
 		this.inspiration = (Boolean) json.get("inspiration");
@@ -41,27 +41,27 @@ public class Miscellaneous {
 		return Component.text(stat, NamedTextColor.WHITE).append(Component.text(description, NamedTextColor.GRAY));
 	}
 
-	private Long getProficiency(JSONObject json) {
-		Integer level = new Character(json).level;
+	private Integer getProficiency(Character character) {
 		Map<Range, Integer> map = new HashMap<>();
 		map.put(new Range(1, 4), 2);
 		map.put(new Range(5, 8), 3);
 		map.put(new Range(9, 12), 4);
 		map.put(new Range(13, 16), 5);
 		map.put(new Range(17, 20), 6);
-		return Long.valueOf(Range.contains(map, level));
+		return Range.contains(map, character.totalLevel);
 	}
 
-	private Long getSpeed(JSONObject json) {
+	private Integer getSpeed(JSONObject json) {
 		JSONObject raceData = (JSONObject) json.get("race");
 		JSONObject weightSpeeds = (JSONObject) raceData.get("weightSpeeds");
 		JSONObject normal = (JSONObject) weightSpeeds.get("normal");
-		return (Long) normal.get("walk");
+		return ((Long) normal.get("walk")).intValue();
 	}
 
 	public void updateData(Modifier modifier) {
 		if (Objects.equals(modifier.subType, "speed")) {
-			this.speed += modifier.value;
+			assert modifier.value != null;
+			this.speed += modifier.value.intValue();
 		}
 	}
 }

@@ -41,7 +41,7 @@ public class CharacterData {
 
 		this.hitPoints = new HitPoints(json, this.stats, this.character);
 
-		this.miscellaneous = new Miscellaneous(json, this.stats);
+		this.miscellaneous = new Miscellaneous(json, this.stats, this.character);
 		modifiers.updateData(Modifiers.ModifierCategory.MISCELLANEOUS, this);
 	}
 
