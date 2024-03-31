@@ -9,8 +9,8 @@ public class Modifiers {
 
 	private final Map<ModifierCategory, List<Modifier>> modifiers = new HashMap<>();
 
-	public Modifiers(JSONObject data) {
-		JSONObject modifiersJson = data.getJSONObject("modifiers");
+	public Modifiers(JSONObject json) {
+		JSONObject modifiersJson = json.getJSONObject("modifiers");
 		for (String modifierType : new String[]{"race", "class", "background", "item", "feat"}) {
 			JSONArray modifiers = modifiersJson.getJSONArray(modifierType);
 			modifiers.forEach(modifierJson -> {

@@ -1,5 +1,6 @@
 package dev.blakeismywaifu.mcdnd.Data;
 
+import dev.blakeismywaifu.mcdnd.Data.Helpers.Inventory;
 import dev.blakeismywaifu.mcdnd.Data.Helpers.Modifier;
 import dev.blakeismywaifu.mcdnd.Data.Helpers.Skill;
 import dev.blakeismywaifu.mcdnd.Data.Helpers.Stat;
@@ -15,9 +16,15 @@ public class Skills {
 
 	public final Map<SkillName, Skill> skills = new HashMap<>();
 
-	public Skills(Stats stats) {
+	public Skills(Stats stats, Inventory inventory) {
 		for (SkillName skillName : SkillName.values()) {
 			skills.put(skillName, new Skill(skillName, stats));
+		}
+
+		for (Inventory.Item item : inventory.getItems()) {
+			if (item.definition.stealthCheck == null) continue;
+			if (item.definition.stealthCheck != 2) continue;
+			skills.get(SkillName.STEALTH).vantage = Skill.Vantage.DISADVANTAGE;
 		}
 	}
 

@@ -1,5 +1,6 @@
 package dev.blakeismywaifu.mcdnd.Data;
 
+import dev.blakeismywaifu.mcdnd.Data.Helpers.Inventory;
 import dev.blakeismywaifu.mcdnd.Data.Helpers.Modifiers;
 import dev.blakeismywaifu.mcdnd.Utils.Fetch;
 import org.bukkit.Bukkit;
@@ -20,6 +21,8 @@ public class CharacterSheet {
 	public Skills skills;
 	public Stats stats;
 
+	public Inventory inventory;
+
 	public CharacterSheet(UUID playerId, String id) {
 		this.characterId = id;
 		this.player = Bukkit.getPlayer(playerId);
@@ -29,20 +32,21 @@ public class CharacterSheet {
 		JSONObject json = new Fetch("https://character-service.dndbeyond.com/character/v5/character/" + this.characterId).getData();
 
 		Modifiers modifiers = new Modifiers(json);
+		this.inventory = new Inventory(json);
 
 		this.characterInfo = new CharacterInfo(json);
 
 		this.stats = new Stats(json);
-		modifiers.getModifiers(Modifiers.ModifierCategory.STATS).forEach(modifier -> stats.updateData(modifier));
+		modifiers.getModifiers(Modifiers.ModifierCategory.STATS).forEach(modifier -> this.stats.updateData(modifier));
 
-		this.hitPoints = new HitPoints(json, stats, characterInfo);
-		modifiers.getModifiers(Modifiers.ModifierCategory.HITPOINTS).forEach(modifier -> hitPoints.updateData(modifier, characterInfo));
+		this.hitPoints = new HitPoints(json, this.stats, this.characterInfo);
+		modifiers.getModifiers(Modifiers.ModifierCategory.HITPOINTS).forEach(modifier -> this.hitPoints.updateData(modifier, characterInfo));
 
-		this.miscellaneous = new Miscellaneous(json, stats, characterInfo);
-		modifiers.getModifiers(Modifiers.ModifierCategory.MISCELLANEOUS).forEach(modifier -> miscellaneous.updateData(modifier));
+		this.miscellaneous = new Miscellaneous(json, this.stats, this.characterInfo);
+		modifiers.getModifiers(Modifiers.ModifierCategory.MISCELLANEOUS).forEach(modifier -> this.miscellaneous.updateData(modifier));
 
-		this.skills = new Skills(stats);
-		modifiers.getModifiers(Modifiers.ModifierCategory.SKILLS).forEach(modifier -> skills.updateData(modifier, stats, miscellaneous));
+		this.skills = new Skills(stats, this.inventory);
+		modifiers.getModifiers(Modifiers.ModifierCategory.SKILLS).forEach(modifier -> this.skills.updateData(modifier, this.stats, this.miscellaneous));
 	}
 
 	public void updateItems() {
