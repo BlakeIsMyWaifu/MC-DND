@@ -4,8 +4,8 @@ import dev.blakeismywaifu.mcdnd.Data.Helpers.DNDClass;
 import dev.blakeismywaifu.mcdnd.Utils.ItemBuilder;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,21 +19,22 @@ public class CharacterInfo {
 	public final Integer totalLevel;
 
 	public CharacterInfo(JSONObject data) {
-		this.name = (String) data.get("name");
-		this.gender = (String) data.get("gender");
+		this.name = data.getString("name");
+		this.gender = data.getString("gender");
 
-		JSONObject raceData = (JSONObject) data.get("race");
-		this.race = (String) raceData.get("fullName");
+		JSONObject raceData = data.getJSONObject("race");
+		this.race = raceData.getString("fullName");
 
-		JSONArray classesData = (JSONArray) data.get("classes");
+		JSONArray classesData = data.getJSONArray("classes");
 		for (Object classData : classesData) {
 			JSONObject classJson = (JSONObject) classData;
-			JSONObject classDefinition = (JSONObject) classJson.get("definition");
-			String className = (String) classDefinition.get("name");
-			Long levelLong = (Long) classJson.get("level");
-			JSONObject subclassDefinition = (JSONObject) classJson.get("subclassDefinition");
-			@Nullable String subclassName = subclassDefinition != null ? (String) subclassDefinition.get("name") : null;
-			classes.add(new DNDClass(className, levelLong.intValue(), subclassName));
+			JSONObject classDefinition = classJson.getJSONObject("definition");
+			String className = classDefinition.getString("name");
+			int level = classJson.getInt("level");
+			JSONObject subclassDefinition = classJson.getJSONObject("subclassDefinition");
+			@Nullable String subclassName = subclassDefinition != null ? subclassDefinition.getString("name") : null;
+			DNDClass dndClass = new DNDClass(className, level, subclassName);
+			classes.add(dndClass);
 		}
 
 		this.totalLevel = this.classes.stream().mapToInt(dndClass -> dndClass.level).sum();

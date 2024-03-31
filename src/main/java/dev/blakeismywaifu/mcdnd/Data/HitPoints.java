@@ -3,7 +3,7 @@ package dev.blakeismywaifu.mcdnd.Data;
 import dev.blakeismywaifu.mcdnd.Data.Helpers.DNDClass;
 import dev.blakeismywaifu.mcdnd.Data.Helpers.Modifier;
 import dev.blakeismywaifu.mcdnd.Data.Helpers.Stat;
-import org.json.simple.JSONObject;
+import org.json.JSONObject;
 
 import java.util.List;
 
@@ -53,7 +53,7 @@ public class HitPoints {
 
 		this.maxHitPoints = totalHitPoints;
 
-		Long removedHitPoints = (Long) data.get("removedHitPoints");
+		int removedHitPoints = data.getInt("removedHitPoints");
 		this.currentHitPoints = Math.toIntExact(this.maxHitPoints - removedHitPoints);
 	}
 

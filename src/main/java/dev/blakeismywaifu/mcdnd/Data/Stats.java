@@ -3,7 +3,7 @@ package dev.blakeismywaifu.mcdnd.Data;
 import dev.blakeismywaifu.mcdnd.Data.Helpers.Modifier;
 import dev.blakeismywaifu.mcdnd.Data.Helpers.Stat;
 import org.bukkit.inventory.ItemStack;
-import org.json.simple.JSONObject;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;

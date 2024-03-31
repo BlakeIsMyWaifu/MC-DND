@@ -5,7 +5,7 @@ import dev.blakeismywaifu.mcdnd.Utils.Fetch;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.json.simple.JSONObject;
+import org.json.JSONObject;
 
 import java.util.UUID;
 

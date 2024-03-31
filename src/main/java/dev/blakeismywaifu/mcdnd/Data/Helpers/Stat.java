@@ -2,8 +2,8 @@ package dev.blakeismywaifu.mcdnd.Data.Helpers;
 
 import dev.blakeismywaifu.mcdnd.Utils.ItemBuilder;
 import org.bukkit.inventory.ItemStack;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 public class Stat {
 
@@ -40,12 +40,10 @@ public class Stat {
 		return item.build();
 	}
 
-	private Integer getStatValue(JSONObject json, String key) {
-		JSONArray statsArray = (JSONArray) json.get(key);
-		JSONObject statObject = (JSONObject) statsArray.get(this.statName.index);
-		Object value = statObject.get("value");
-		if (value == null) return 0;
-		return Math.toIntExact((Long) statObject.get("value"));
+	private int getStatValue(JSONObject json, String key) {
+		JSONArray statsArray = json.getJSONArray(key);
+		JSONObject statObject = statsArray.getJSONObject(this.statName.index);
+		return statObject.isNull("value") ? 0 : statObject.getInt("value");
 	}
 
 	public enum StatName {

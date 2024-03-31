@@ -1,7 +1,7 @@
 package dev.blakeismywaifu.mcdnd.Data.Helpers;
 
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.*;
 
@@ -10,13 +10,13 @@ public class Modifiers {
 	private final Map<ModifierCategory, List<Modifier>> modifiers = new HashMap<>();
 
 	public Modifiers(JSONObject data) {
-		JSONObject modifiersJson = (JSONObject) data.get("modifiers");
+		JSONObject modifiersJson = data.getJSONObject("modifiers");
 		for (String modifierType : new String[]{"race", "class", "background", "item", "feat"}) {
-			JSONArray modifiers = (JSONArray) modifiersJson.get(modifierType);
-			for (Object modifierJson : modifiers) {
+			JSONArray modifiers = modifiersJson.getJSONArray(modifierType);
+			modifiers.forEach(modifierJson -> {
 				Modifier modifier = new Modifier((JSONObject) modifierJson);
 				sortModifier(modifier);
-			}
+			});
 		}
 	}
 

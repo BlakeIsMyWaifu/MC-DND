@@ -1,8 +1,8 @@
 package dev.blakeismywaifu.mcdnd.Data.Helpers;
 
 import org.jetbrains.annotations.Nullable;
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,53 +25,35 @@ public class Modifier {
 	public final Integer modifierSubTypeId;
 	public final Integer componentId;
 	public final Integer componentTypeId;
-	//	public dice
+	// dice
 	public final @Nullable String restriction;
 	public final @Nullable Integer statId;
 	public final @Nullable JSONObject duration;
 	public final @Nullable Integer value;
 
 	public Modifier(JSONObject json) {
-		Object fixedValue = json.get("fixedValue");
-		this.fixedValue = fixedValue != null ? ((Long) fixedValue).intValue() : null;
+		this.fixedValue = json.isNull("fixedValue") ? null : json.getInt("fixedValue");
+		this.id = json.getString("id");
+		this.entityId = json.isNull("entityId") ? null : json.getInt("entityId");
+		this.entityTypeId = json.isNull("entityTypeId") ? null : json.getInt("entityTypeId");
+		this.subType = json.getString("subType");
+		this.restriction = json.isNull("restriction") ? null : json.getString("restriction");
+		this.statId = json.isNull("statId") ? null : json.getInt("statId");
+		this.requiresAttunement = json.getBoolean("requiresAttunement");
+		this.duration = json.isNull("duration") ? null : json.getJSONObject("duration");
+		this.friendlyTypeName = json.getString("friendlyTypeName");
+		this.friendlySubtypeName = json.getString("friendlySubtypeName");
+		this.isGranted = json.getBoolean("isGranted");
+		this.bonusTypes = json.getJSONArray("bonusTypes");
+		this.value = json.isNull("value") ? null : json.getInt("value");
+		this.availableToMulticlass = json.getBoolean("availableToMulticlass");
+		this.modifierTypeId = json.getInt("modifierTypeId");
+		this.modifierSubTypeId = json.getInt("modifierSubTypeId");
+		this.componentId = json.getInt("componentId");
+		this.componentTypeId = json.getInt("componentTypeId");
 
-		this.id = (String) json.get("id");
-
-		Object entityId = json.get("entityId");
-		this.entityId = entityId != null ? ((Long) entityId).intValue() : null;
-
-		Object entityTypeId = json.get("entityTypeId");
-		this.entityTypeId = entityTypeId != null ? ((Long) entityTypeId).intValue() : null;
-
-		String type = (String) json.get("type");
+		String type = json.getString("type");
 		this.type = ModifierType.findType(type);
-
-		this.subType = (String) json.get("subType");
-
-		Object restriction = json.get("restriction");
-		this.restriction = restriction != null ? (String) restriction : null;
-
-		Object statId = json.get("statId");
-		this.statId = statId != null ? ((Long) statId).intValue() : null;
-
-		this.requiresAttunement = (Boolean) json.get("requiresAttunement");
-
-		Object duration = json.get("duration");
-		this.duration = duration != null ? (JSONObject) duration : null;
-
-		this.friendlyTypeName = (String) json.get("friendlyTypeName");
-		this.friendlySubtypeName = (String) json.get("friendlySubtypeName");
-		this.isGranted = (Boolean) json.get("isGranted");
-		this.bonusTypes = (JSONArray) json.get("bonusTypes");
-
-		Object value = json.get("value");
-		this.value = value != null ? ((Long) value).intValue() : null;
-
-		this.availableToMulticlass = (Boolean) json.get("availableToMulticlass");
-		this.modifierTypeId = ((Long) json.get("modifierTypeId")).intValue();
-		this.modifierSubTypeId = ((Long) json.get("modifierSubTypeId")).intValue();
-		this.componentId = ((Long) json.get("componentId")).intValue();
-		this.componentTypeId = ((Long) json.get("componentTypeId")).intValue();
 	}
 
 	public enum ModifierType {

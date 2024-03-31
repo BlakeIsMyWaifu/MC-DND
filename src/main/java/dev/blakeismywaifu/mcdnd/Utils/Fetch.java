@@ -1,8 +1,6 @@
 package dev.blakeismywaifu.mcdnd.Utils;
 
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -17,17 +15,7 @@ public class Fetch {
 		this.uri = uri;
 	}
 
-	private JSONObject JSONParse(String str) {
-		JSONObject out = new JSONObject();
-		try {
-			out = (JSONObject) new JSONParser().parse(str);
-		} catch (ParseException err) {
-			err.printStackTrace();
-		}
-		return out;
-	}
-
-	public JSONObject getData() {
+	private String getRawJSON() {
 		StringBuilder content = new StringBuilder();
 		try {
 			URL url = new URL(this.uri);
@@ -41,9 +29,14 @@ public class Fetch {
 		} catch (IOException err) {
 			err.printStackTrace();
 		}
+		return content.toString();
+	}
 
-		JSONObject json = JSONParse(content.toString());
-		Boolean status = (Boolean) json.get("success");
+	public JSONObject getData() {
+		String rawJson = getRawJSON();
+
+		JSONObject json = new JSONObject(rawJson);
+		boolean status = json.getBoolean("success");
 
 		if (status) {
 			Console.info("API Success from url " + this.uri);
@@ -51,6 +44,6 @@ public class Fetch {
 			Console.error("API Failed from url " + this.uri);
 		}
 
-		return (JSONObject) json.get("data");
+		return json.getJSONObject("data");
 	}
 }

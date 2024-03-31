@@ -7,7 +7,7 @@ import dev.blakeismywaifu.mcdnd.Utils.Range;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.inventory.ItemStack;
-import org.json.simple.JSONObject;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,7 +24,7 @@ public class Miscellaneous {
 		this.proficiency = getProficiency(characterInfo);
 		this.speed = getSpeed(json);
 		this.initiative = stats.getStat(Stat.StatName.DEXTERITY).modifier;
-		this.inspiration = (Boolean) json.get("inspiration");
+		this.inspiration = json.getBoolean("inspiration");
 	}
 
 	public ItemStack getItem() {
@@ -52,10 +52,10 @@ public class Miscellaneous {
 	}
 
 	private Integer getSpeed(JSONObject json) {
-		JSONObject raceData = (JSONObject) json.get("race");
-		JSONObject weightSpeeds = (JSONObject) raceData.get("weightSpeeds");
-		JSONObject normal = (JSONObject) weightSpeeds.get("normal");
-		return ((Long) normal.get("walk")).intValue();
+		JSONObject raceData = json.getJSONObject("race");
+		JSONObject weightSpeeds = raceData.getJSONObject("weightSpeeds");
+		JSONObject normal = weightSpeeds.getJSONObject("normal");
+		return normal.getInt("walk");
 	}
 
 	public void updateData(Modifier modifier) {
