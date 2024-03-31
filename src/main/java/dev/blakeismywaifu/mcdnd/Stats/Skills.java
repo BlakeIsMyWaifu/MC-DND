@@ -7,21 +7,17 @@ import dev.blakeismywaifu.mcdnd.Utils.ItemBuilder;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.inventory.ItemStack;
-import org.json.simple.JSONObject;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Stream;
 
 public class Skills {
 
 	public Map<SkillName, Skill> skills = new HashMap<>();
 
-	public Skills(JSONObject json) {
+	public Skills(Stats stats) {
 		for (SkillName skillName : SkillName.values()) {
-			skills.put(skillName, new Skill(skillName, json));
+			skills.put(skillName, new Skill(skillName, stats));
 		}
 	}
 
@@ -53,11 +49,35 @@ public class Skills {
 		return itemBuilder.build();
 	}
 
-	public void updateData(Modifier modifier) {
-		if (Skills.SkillName.labelList.contains(modifier.subType)) {
-			Skills.SkillName skillName = Skills.SkillName.findSkillName(modifier.subType);
+	public void updateData(Modifier modifier, Stats stats, Miscellaneous miscellaneous) {
+		if (SkillName.labelList.contains(modifier.subType)) {
+			SkillName skillName = SkillName.findSkillName(modifier.subType);
 			Skill skill = this.skills.get(skillName);
-			skill.proficiency = Skill.Proficiency.PROFICIENT;
+			Integer statModifier = stats.stats.get(skill.stat).modifier;
+
+			switch (modifier.type) {
+				case HALF_PROFICIENCY:
+					if (skill.proficiency != Skill.Proficiency.NOT) break;
+					skill.proficiency = Skill.Proficiency.HALF;
+					skill.modifier = statModifier + Math.floorDiv(miscellaneous.proficiency, 2);
+					break;
+				case PROFICIENCY:
+					if (skill.proficiency == Skill.Proficiency.EXPERTISE) break;
+					skill.proficiency = Skill.Proficiency.PROFICIENT;
+					skill.modifier = statModifier + miscellaneous.proficiency;
+					break;
+				case EXPERTISE:
+					skill.proficiency = Skill.Proficiency.EXPERTISE;
+					skill.modifier = statModifier + (2 * miscellaneous.proficiency);
+					break;
+			}
+		} else if (Objects.equals(modifier.subType, "ability-checks")) {
+			for (SkillName skillName : SkillName.values()) {
+				Skill skill = this.skills.get(skillName);
+				if (skill.proficiency != Skill.Proficiency.NOT) return;
+				skill.proficiency = Skill.Proficiency.HALF;
+				skill.modifier = stats.stats.get(skill.stat).modifier + Math.floorDiv(miscellaneous.proficiency, 2);
+			}
 		}
 	}
 

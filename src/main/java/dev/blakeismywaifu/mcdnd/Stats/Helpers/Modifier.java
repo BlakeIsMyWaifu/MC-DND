@@ -77,6 +77,8 @@ public class Modifier {
 	public enum ModifierType {
 		BONUS("bonus"),
 		PROFICIENCY("proficiency"),
+		EXPERTISE("expertise"),
+		HALF_PROFICIENCY("half-proficiency"),
 		SET_BASE("set-base"),
 		ADVANTAGE("advantage"),
 		SET("set"),

@@ -36,14 +36,14 @@ public class CharacterData {
 		this.stats = new Stats(json);
 		modifiers.updateData(Modifiers.ModifierCategory.STATS, this);
 
-		this.skills = new Skills(json);
-		modifiers.updateData(Modifiers.ModifierCategory.SKILLS, this);
-
 		this.hitPoints = new HitPoints(json, this.stats, this.character);
 		modifiers.updateData(Modifiers.ModifierCategory.HITPOINTS, this);
 
 		this.miscellaneous = new Miscellaneous(json, this.stats, this.character);
 		modifiers.updateData(Modifiers.ModifierCategory.MISCELLANEOUS, this);
+
+		this.skills = new Skills(this.stats);
+		modifiers.updateData(Modifiers.ModifierCategory.SKILLS, this);
 	}
 
 	public void updateItems() {

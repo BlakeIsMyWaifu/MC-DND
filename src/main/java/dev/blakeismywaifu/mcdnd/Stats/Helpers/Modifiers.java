@@ -4,10 +4,7 @@ import dev.blakeismywaifu.mcdnd.Data.CharacterData;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Modifiers {
 
@@ -30,13 +27,13 @@ public class Modifiers {
 				modifiers.computeIfAbsent(ModifierCategory.STATS, k -> new ArrayList<>()).forEach(modifier -> characterData.stats.updateData(modifier));
 				break;
 			case SKILLS:
-				modifiers.computeIfAbsent(ModifierCategory.SKILLS, k -> new ArrayList<>()).forEach(modifier -> characterData.skills.updateData(modifier));
+				modifiers.computeIfAbsent(ModifierCategory.SKILLS, k -> new ArrayList<>()).forEach(modifier -> characterData.skills.updateData(modifier, characterData.stats, characterData.miscellaneous));
 				break;
 			case MISCELLANEOUS:
 				modifiers.computeIfAbsent(ModifierCategory.MISCELLANEOUS, k -> new ArrayList<>()).forEach(modifier -> characterData.miscellaneous.updateData(modifier));
 				break;
 			case HITPOINTS:
-				modifiers.computeIfAbsent(ModifierCategory.HITPOINTS, k -> new ArrayList<>()).forEach(modifier -> characterData.hitPoints.updateData(modifier, characterData));
+				modifiers.computeIfAbsent(ModifierCategory.HITPOINTS, k -> new ArrayList<>()).forEach(modifier -> characterData.hitPoints.updateData(modifier, characterData.character));
 				break;
 		}
 	}
@@ -46,8 +43,16 @@ public class Modifiers {
 	}
 
 	private void sortModifier(Modifier modifier) {
-		if (modifier.type == Modifier.ModifierType.BONUS) sortBonusModifier(modifier);
-		if (modifier.type == Modifier.ModifierType.PROFICIENCY) addModifier(ModifierCategory.SKILLS, modifier);
+		switch (modifier.type) {
+			case BONUS:
+				sortBonusModifier(modifier);
+				break;
+			case HALF_PROFICIENCY:
+				if (!Objects.equals(modifier.subType, "ability-checks")) break;
+			case PROFICIENCY:
+			case EXPERTISE:
+				addModifier(ModifierCategory.SKILLS, modifier);
+		}
 	}
 
 	private void sortBonusModifier(Modifier modifier) {

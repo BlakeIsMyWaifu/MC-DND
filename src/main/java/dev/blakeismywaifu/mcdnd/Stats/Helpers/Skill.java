@@ -1,25 +1,21 @@
 package dev.blakeismywaifu.mcdnd.Stats.Helpers;
 
 import dev.blakeismywaifu.mcdnd.Stats.Skills;
-import org.json.simple.JSONObject;
+import dev.blakeismywaifu.mcdnd.Stats.Stats;
 
 public class Skill {
 
-	public Proficiency proficiency;
+	public Proficiency proficiency = Proficiency.NOT;
 	public Stat.StatName stat;
 	public Skills.SkillName skill;
-	public Vantage vantage;
-	public Long modifier;
+	public Vantage vantage = Vantage.NONE;
+	public Integer modifier;
 
-	public Skill(Skills.SkillName skill, JSONObject json) {
+	public Skill(Skills.SkillName skill, Stats stats) {
 		this.skill = skill;
-		// TODO update proficiency
-		this.proficiency = Proficiency.NOT;
 		this.stat = skill.stat;
 		// TODO update vantage
-		this.vantage = Vantage.NONE;
-		// TODO needs stats
-		this.modifier = 2L;
+		this.modifier = stats.stats.get(skill.stat).modifier;
 	}
 
 	public enum Proficiency {
