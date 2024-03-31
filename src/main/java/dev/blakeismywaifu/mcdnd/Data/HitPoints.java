@@ -1,8 +1,8 @@
-package dev.blakeismywaifu.mcdnd.Stats;
+package dev.blakeismywaifu.mcdnd.Data;
 
-import dev.blakeismywaifu.mcdnd.Stats.Helpers.DNDClass;
-import dev.blakeismywaifu.mcdnd.Stats.Helpers.Modifier;
-import dev.blakeismywaifu.mcdnd.Stats.Helpers.Stat;
+import dev.blakeismywaifu.mcdnd.Data.Helpers.DNDClass;
+import dev.blakeismywaifu.mcdnd.Data.Helpers.Modifier;
+import dev.blakeismywaifu.mcdnd.Data.Helpers.Stat;
 import org.json.simple.JSONObject;
 
 import java.util.List;
@@ -13,13 +13,13 @@ public class HitPoints {
 	public Integer maxHitPoints;
 	public Integer currentHitPoints;
 
-	public HitPoints(JSONObject data, Stats stats, Character character) {
-		this.constitutionModifier = stats.stats.get(Stat.StatName.CONSTITUTION).modifier;
+	public HitPoints(JSONObject data, Stats stats, CharacterInfo characterInfo) {
+		this.constitutionModifier = stats.getStat(Stat.StatName.CONSTITUTION).modifier;
 
 		int totalHitPoints = 0;
 		totalHitPoints += this.constitutionModifier;
 
-		switch (character.classes.get(0).className) {
+		switch (characterInfo.classes.get(0).className) {
 			case WIZARD:
 			case SORCERER:
 				totalHitPoints += 6;
@@ -43,7 +43,7 @@ public class HitPoints {
 				break;
 		}
 
-		List<DNDClass> classes = character.classes;
+		List<DNDClass> classes = characterInfo.classes;
 		for (int i = 0; i < classes.size(); i++) {
 			DNDClass dndClass = classes.get(i);
 			totalHitPoints += calculateBonusHitPoints(dndClass, i == 0);
@@ -88,18 +88,18 @@ public class HitPoints {
 		return bonusHitPoints;
 	}
 
-	public void updateData(Modifier modifier, Character character) {
+	public void updateData(Modifier modifier, CharacterInfo characterInfo) {
 		int bonusHitPoints = 0;
 
-		switch (modifier.componentId.intValue()) {
+		switch (modifier.componentId) {
 			case 49: // Tough Feat
-				bonusHitPoints += 2 * character.totalLevel;
+				bonusHitPoints += 2 * characterInfo.totalLevel;
 				break;
 			case 122: // Hill Dwarf Racial
-				bonusHitPoints += character.totalLevel;
+				bonusHitPoints += characterInfo.totalLevel;
 				break;
 			case 377: // Draconic Sorcerer Subclass
-				for (DNDClass dndClass : character.classes) {
+				for (DNDClass dndClass : characterInfo.classes) {
 					if (dndClass.className != DNDClass.ClassName.SORCERER) continue;
 					bonusHitPoints += dndClass.level;
 				}

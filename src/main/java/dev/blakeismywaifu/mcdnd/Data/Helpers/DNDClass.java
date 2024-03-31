@@ -1,4 +1,4 @@
-package dev.blakeismywaifu.mcdnd.Stats.Helpers;
+package dev.blakeismywaifu.mcdnd.Data.Helpers;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -7,9 +7,9 @@ import java.util.Map;
 
 public class DNDClass {
 
-	public ClassName className;
-	public Integer level;
-	public @Nullable String subclass;
+	public final ClassName className;
+	public final Integer level;
+	public final @Nullable String subclass;
 
 	public DNDClass(String className, Integer level, @Nullable String subclass) {
 		this.className = ClassName.findClass(className);

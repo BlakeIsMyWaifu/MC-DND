@@ -1,13 +1,13 @@
-package dev.blakeismywaifu.mcdnd.Stats.Helpers;
+package dev.blakeismywaifu.mcdnd.Data.Helpers;
 
-import dev.blakeismywaifu.mcdnd.Stats.Skills;
-import dev.blakeismywaifu.mcdnd.Stats.Stats;
+import dev.blakeismywaifu.mcdnd.Data.Skills;
+import dev.blakeismywaifu.mcdnd.Data.Stats;
 
 public class Skill {
 
+	public final Stat.StatName stat;
+	public final Skills.SkillName skill;
 	public Proficiency proficiency = Proficiency.NOT;
-	public Stat.StatName stat;
-	public Skills.SkillName skill;
 	public Vantage vantage = Vantage.NONE;
 	public Integer modifier;
 
@@ -15,7 +15,7 @@ public class Skill {
 		this.skill = skill;
 		this.stat = skill.stat;
 		// TODO update vantage
-		this.modifier = stats.stats.get(skill.stat).modifier;
+		this.modifier = stats.getStat(skill.stat).modifier;
 	}
 
 	public enum Proficiency {

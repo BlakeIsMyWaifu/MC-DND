@@ -1,8 +1,8 @@
 package dev.blakeismywaifu.mcdnd.Tasks;
 
-import dev.blakeismywaifu.mcdnd.Data.CharacterData;
+import dev.blakeismywaifu.mcdnd.Data.CharacterSheet;
 import dev.blakeismywaifu.mcdnd.Main;
-import dev.blakeismywaifu.mcdnd.Utils.TestPlayer;
+import dev.blakeismywaifu.mcdnd.Utils.TestUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
@@ -25,16 +25,15 @@ public class QuickUpdateAll extends BukkitRunnable {
 		List<UUID> playerIds = this.main.playerCache.listPlayers();
 		playerIds.forEach(playerId -> {
 			Player player = Bukkit.getPlayer(playerId);
-			if (!new TestPlayer(player).isPlayer) return;
-			assert player != null;
+			if (!TestUtils.isDndPlayer(player)) return;
 
-			CharacterData characterData = this.main.playerCache.getPlayer(playerId);
+			CharacterSheet characterSheet = this.main.playerCache.getPlayer(playerId);
 
 			player.setSaturation(20f);
 			player.setFoodLevel(20);
 
-			if (characterData.hitPoints == null) return;
-			player.sendActionBar(Component.text("Health: " + characterData.hitPoints.currentHitPoints + " / " + characterData.hitPoints.maxHitPoints, NamedTextColor.RED));
+			if (characterSheet.hitPoints == null) return;
+			player.sendActionBar(Component.text("Health: " + characterSheet.hitPoints.currentHitPoints + " / " + characterSheet.hitPoints.maxHitPoints, NamedTextColor.RED));
 		});
 	}
 }

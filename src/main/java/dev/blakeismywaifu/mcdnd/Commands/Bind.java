@@ -1,11 +1,11 @@
 package dev.blakeismywaifu.mcdnd.Commands;
 
-import dev.blakeismywaifu.mcdnd.Data.CharacterData;
-import dev.blakeismywaifu.mcdnd.Data.PlayerCache;
+import dev.blakeismywaifu.mcdnd.Data.CharacterSheet;
 import dev.blakeismywaifu.mcdnd.Main;
 import dev.blakeismywaifu.mcdnd.Tasks.UpdatePlayer;
 import dev.blakeismywaifu.mcdnd.Utils.CommandResponse;
-import dev.blakeismywaifu.mcdnd.Utils.Utils;
+import dev.blakeismywaifu.mcdnd.Utils.PlayerCache;
+import dev.blakeismywaifu.mcdnd.Utils.TestUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentBuilder;
 import net.kyori.adventure.text.TextComponent;
@@ -52,8 +52,8 @@ public class Bind implements CommandExecutor {
 
 			ComponentBuilder<TextComponent, TextComponent.Builder> viewMessage = Component.text("\n[" + playerIds.size() + "] Bound Players: ", NamedTextColor.GREEN).toBuilder();
 			playerIds.forEach(playerId -> {
-				CharacterData characterData = this.playerCache.getPlayer(playerId);
-				HoverEvent<Component> hoverEvent = HoverEvent.showText(Component.text(characterData.characterId));
+				CharacterSheet characterSheet = this.playerCache.getPlayer(playerId);
+				HoverEvent<Component> hoverEvent = HoverEvent.showText(Component.text(characterSheet.characterId));
 				String playerName = Objects.requireNonNull(Bukkit.getPlayer(playerId)).getName();
 				Component name = Component.text(playerName + ", ").hoverEvent(hoverEvent);
 				viewMessage.append(name);
@@ -92,7 +92,7 @@ public class Bind implements CommandExecutor {
 		}
 
 		// Error from invalid character id
-		if (!Utils.isInteger(args[0])) {
+		if (!TestUtils.isInteger(args[0])) {
 			CommandResponse.error(sender, "Character id must be an integer");
 			return false;
 		}

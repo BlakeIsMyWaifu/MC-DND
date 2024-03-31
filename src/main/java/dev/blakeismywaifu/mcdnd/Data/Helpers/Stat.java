@@ -1,4 +1,4 @@
-package dev.blakeismywaifu.mcdnd.Stats.Helpers;
+package dev.blakeismywaifu.mcdnd.Data.Helpers;
 
 import dev.blakeismywaifu.mcdnd.Utils.ItemBuilder;
 import org.bukkit.inventory.ItemStack;
@@ -8,10 +8,10 @@ import org.json.simple.JSONObject;
 public class Stat {
 
 	public final StatName statName;
+	public final Integer base;
+	public final Integer bonus;
+	public final Integer override;
 	public Integer modifier;
-	public Integer base;
-	public Integer bonus;
-	public Integer override;
 	public Integer total = 0;
 
 	public Stat(StatName statName, JSONObject json) {

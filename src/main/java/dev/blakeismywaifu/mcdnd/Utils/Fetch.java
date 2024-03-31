@@ -1,6 +1,5 @@
-package dev.blakeismywaifu.mcdnd.Data;
+package dev.blakeismywaifu.mcdnd.Utils;
 
-import dev.blakeismywaifu.mcdnd.Utils.Console;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;

@@ -25,8 +25,7 @@ import static org.bukkit.Bukkit.getServer;
 
 public class ItemBuilder {
 
-	private final ArrayList<String> lore = new ArrayList<>();
-	private final ArrayList<Component> loreComponent = new ArrayList<>();
+	private final ArrayList<Component> lore = new ArrayList<>();
 	private ItemStack item;
 
 	public ItemBuilder(String name) {
@@ -62,13 +61,13 @@ public class ItemBuilder {
 	}
 
 	public void lore(Component lore) {
-		this.loreComponent.add(lore);
-		lore(this.loreComponent);
+		this.lore.add(lore);
+		lore(this.lore);
 	}
 
 	public void lore(String lore) {
-		this.loreComponent.add(Component.text(lore, NamedTextColor.GRAY));
-		lore(this.loreComponent);
+		this.lore.add(Component.text(lore, NamedTextColor.GRAY));
+		lore(this.lore);
 	}
 
 	public void enchantments(Map<Enchantment, Integer> enchantments) {

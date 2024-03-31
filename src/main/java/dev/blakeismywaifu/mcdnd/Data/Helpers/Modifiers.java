@@ -1,6 +1,5 @@
-package dev.blakeismywaifu.mcdnd.Stats.Helpers;
+package dev.blakeismywaifu.mcdnd.Data.Helpers;
 
-import dev.blakeismywaifu.mcdnd.Data.CharacterData;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
@@ -8,7 +7,7 @@ import java.util.*;
 
 public class Modifiers {
 
-	public Map<ModifierCategory, List<Modifier>> modifiers = new HashMap<>();
+	private final Map<ModifierCategory, List<Modifier>> modifiers = new HashMap<>();
 
 	public Modifiers(JSONObject data) {
 		JSONObject modifiersJson = (JSONObject) data.get("modifiers");
@@ -21,21 +20,8 @@ public class Modifiers {
 		}
 	}
 
-	public void updateData(ModifierCategory modifierCategory, CharacterData characterData) {
-		switch (modifierCategory) {
-			case STATS:
-				modifiers.computeIfAbsent(ModifierCategory.STATS, k -> new ArrayList<>()).forEach(modifier -> characterData.stats.updateData(modifier));
-				break;
-			case SKILLS:
-				modifiers.computeIfAbsent(ModifierCategory.SKILLS, k -> new ArrayList<>()).forEach(modifier -> characterData.skills.updateData(modifier, characterData.stats, characterData.miscellaneous));
-				break;
-			case MISCELLANEOUS:
-				modifiers.computeIfAbsent(ModifierCategory.MISCELLANEOUS, k -> new ArrayList<>()).forEach(modifier -> characterData.miscellaneous.updateData(modifier));
-				break;
-			case HITPOINTS:
-				modifiers.computeIfAbsent(ModifierCategory.HITPOINTS, k -> new ArrayList<>()).forEach(modifier -> characterData.hitPoints.updateData(modifier, characterData.character));
-				break;
-		}
+	public List<Modifier> getModifiers(ModifierCategory modifierCategory) {
+		return modifiers.computeIfAbsent(modifierCategory, k -> new ArrayList<>());
 	}
 
 	private void addModifier(ModifierCategory modifierCategory, Modifier modifier) {

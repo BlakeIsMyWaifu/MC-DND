@@ -1,7 +1,7 @@
-package dev.blakeismywaifu.mcdnd.Stats;
+package dev.blakeismywaifu.mcdnd.Data;
 
-import dev.blakeismywaifu.mcdnd.Stats.Helpers.Modifier;
-import dev.blakeismywaifu.mcdnd.Stats.Helpers.Stat;
+import dev.blakeismywaifu.mcdnd.Data.Helpers.Modifier;
+import dev.blakeismywaifu.mcdnd.Data.Helpers.Stat;
 import dev.blakeismywaifu.mcdnd.Utils.ItemBuilder;
 import dev.blakeismywaifu.mcdnd.Utils.Range;
 import net.kyori.adventure.text.Component;
@@ -15,15 +15,15 @@ import java.util.Objects;
 
 public class Miscellaneous {
 
-	public Integer proficiency;
+	public final Integer proficiency;
+	public final Boolean inspiration;
+	public final Integer initiative;
 	public Integer speed;
-	public Boolean inspiration;
-	public Integer initiative;
 
-	public Miscellaneous(JSONObject json, Stats stats, Character character) {
-		this.proficiency = getProficiency(character);
+	public Miscellaneous(JSONObject json, Stats stats, CharacterInfo characterInfo) {
+		this.proficiency = getProficiency(characterInfo);
 		this.speed = getSpeed(json);
-		this.initiative = stats.stats.get(Stat.StatName.DEXTERITY).modifier;
+		this.initiative = stats.getStat(Stat.StatName.DEXTERITY).modifier;
 		this.inspiration = (Boolean) json.get("inspiration");
 	}
 
@@ -41,14 +41,14 @@ public class Miscellaneous {
 		return Component.text(stat, NamedTextColor.WHITE).append(Component.text(description, NamedTextColor.GRAY));
 	}
 
-	private Integer getProficiency(Character character) {
+	private Integer getProficiency(CharacterInfo characterInfo) {
 		Map<Range, Integer> map = new HashMap<>();
 		map.put(new Range(1, 4), 2);
 		map.put(new Range(5, 8), 3);
 		map.put(new Range(9, 12), 4);
 		map.put(new Range(13, 16), 5);
 		map.put(new Range(17, 20), 6);
-		return Range.contains(map, character.totalLevel);
+		return Range.contains(map, characterInfo.totalLevel);
 	}
 
 	private Integer getSpeed(JSONObject json) {
@@ -61,7 +61,7 @@ public class Miscellaneous {
 	public void updateData(Modifier modifier) {
 		if (Objects.equals(modifier.subType, "speed")) {
 			assert modifier.value != null;
-			this.speed += modifier.value.intValue();
+			this.speed += modifier.value;
 		}
 	}
 }

@@ -1,8 +1,8 @@
-package dev.blakeismywaifu.mcdnd.Stats;
+package dev.blakeismywaifu.mcdnd.Data;
 
-import dev.blakeismywaifu.mcdnd.Stats.Helpers.Modifier;
-import dev.blakeismywaifu.mcdnd.Stats.Helpers.Skill;
-import dev.blakeismywaifu.mcdnd.Stats.Helpers.Stat;
+import dev.blakeismywaifu.mcdnd.Data.Helpers.Modifier;
+import dev.blakeismywaifu.mcdnd.Data.Helpers.Skill;
+import dev.blakeismywaifu.mcdnd.Data.Helpers.Stat;
 import dev.blakeismywaifu.mcdnd.Utils.ItemBuilder;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -13,7 +13,7 @@ import java.util.stream.Stream;
 
 public class Skills {
 
-	public Map<SkillName, Skill> skills = new HashMap<>();
+	public final Map<SkillName, Skill> skills = new HashMap<>();
 
 	public Skills(Stats stats) {
 		for (SkillName skillName : SkillName.values()) {
@@ -53,7 +53,7 @@ public class Skills {
 		if (SkillName.labelList.contains(modifier.subType)) {
 			SkillName skillName = SkillName.findSkillName(modifier.subType);
 			Skill skill = this.skills.get(skillName);
-			Integer statModifier = stats.stats.get(skill.stat).modifier;
+			Integer statModifier = stats.getStat(skill.stat).modifier;
 
 			switch (modifier.type) {
 				case HALF_PROFICIENCY:
@@ -76,7 +76,7 @@ public class Skills {
 				Skill skill = this.skills.get(skillName);
 				if (skill.proficiency != Skill.Proficiency.NOT) return;
 				skill.proficiency = Skill.Proficiency.HALF;
-				skill.modifier = stats.stats.get(skill.stat).modifier + Math.floorDiv(miscellaneous.proficiency, 2);
+				skill.modifier = stats.getStat(skill.stat).modifier + Math.floorDiv(miscellaneous.proficiency, 2);
 			}
 		}
 	}

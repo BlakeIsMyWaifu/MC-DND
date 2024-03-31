@@ -1,6 +1,6 @@
-package dev.blakeismywaifu.mcdnd.Stats;
+package dev.blakeismywaifu.mcdnd.Data;
 
-import dev.blakeismywaifu.mcdnd.Stats.Helpers.DNDClass;
+import dev.blakeismywaifu.mcdnd.Data.Helpers.DNDClass;
 import dev.blakeismywaifu.mcdnd.Utils.ItemBuilder;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
@@ -10,7 +10,7 @@ import org.json.simple.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Character {
+public class CharacterInfo {
 
 	public final String name;
 	public final @Nullable String gender;
@@ -18,7 +18,7 @@ public class Character {
 	public final List<DNDClass> classes = new ArrayList<>();
 	public final Integer totalLevel;
 
-	public Character(JSONObject data) {
+	public CharacterInfo(JSONObject data) {
 		this.name = (String) data.get("name");
 		this.gender = (String) data.get("gender");
 

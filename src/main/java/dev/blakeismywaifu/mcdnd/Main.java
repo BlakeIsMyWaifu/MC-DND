@@ -1,10 +1,10 @@
 package dev.blakeismywaifu.mcdnd;
 
 import dev.blakeismywaifu.mcdnd.Commands.Bind;
-import dev.blakeismywaifu.mcdnd.Data.PlayerCache;
 import dev.blakeismywaifu.mcdnd.Tasks.FullUpdateAll;
 import dev.blakeismywaifu.mcdnd.Tasks.QuickUpdateAll;
 import dev.blakeismywaifu.mcdnd.Utils.Console;
+import dev.blakeismywaifu.mcdnd.Utils.PlayerCache;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -14,7 +14,7 @@ import java.util.Map;
 
 public final class Main extends JavaPlugin {
 
-	public PlayerCache playerCache = new PlayerCache();
+	public final PlayerCache playerCache = new PlayerCache();
 
 	@Override
 	public void onEnable() {

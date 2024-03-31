@@ -1,7 +1,7 @@
-package dev.blakeismywaifu.mcdnd.Stats;
+package dev.blakeismywaifu.mcdnd.Data;
 
-import dev.blakeismywaifu.mcdnd.Stats.Helpers.Modifier;
-import dev.blakeismywaifu.mcdnd.Stats.Helpers.Stat;
+import dev.blakeismywaifu.mcdnd.Data.Helpers.Modifier;
+import dev.blakeismywaifu.mcdnd.Data.Helpers.Stat;
 import org.bukkit.inventory.ItemStack;
 import org.json.simple.JSONObject;
 
@@ -12,13 +12,17 @@ import java.util.Map;
 
 public class Stats {
 
-	public final Map<Stat.StatName, Stat> stats = new LinkedHashMap<>();
+	private final Map<Stat.StatName, Stat> stats = new LinkedHashMap<>();
 
 	public Stats(JSONObject json) {
 		Stat.StatName[] statOrder = {Stat.StatName.STRENGTH, Stat.StatName.DEXTERITY, Stat.StatName.CONSTITUTION, Stat.StatName.INTELLIGENCE, Stat.StatName.WISDOM, Stat.StatName.CHARISMA};
 		for (Stat.StatName stat : statOrder) {
 			this.stats.put(stat, new Stat(stat, json));
 		}
+	}
+
+	public Stat getStat(Stat.StatName statName) {
+		return stats.get(statName);
 	}
 
 	public List<ItemStack> getItems() {
@@ -52,6 +56,6 @@ public class Stats {
 		}
 
 		assert modifier.value != null;
-		this.stats.get(stat).addToTotal(modifier.value.intValue());
+		this.stats.get(stat).addToTotal(modifier.value);
 	}
 }
