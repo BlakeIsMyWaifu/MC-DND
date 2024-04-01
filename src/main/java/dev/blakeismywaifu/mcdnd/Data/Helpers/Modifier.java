@@ -64,6 +64,7 @@ public class Modifier {
 		SET_BASE("set-base"),
 		ADVANTAGE("advantage"),
 		SET("set"),
+		LANGUAGE("language"),
 		_UNKNOWN("unknown");
 
 		private static final Map<String, ModifierType> labelMap = new HashMap<>();

@@ -39,7 +39,7 @@ public class Fetch {
 		boolean status = json.getBoolean("success");
 
 		if (status) {
-			Console.info("API Success from url " + this.uri);
+			Console.success("API Success from url " + this.uri);
 		} else {
 			Console.error("API Failed from url " + this.uri);
 		}

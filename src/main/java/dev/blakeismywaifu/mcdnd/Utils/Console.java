@@ -9,14 +9,18 @@ public final class Console {
 	private static final String prefix = "[dnd] ";
 
 	public static void info(final String message) {
+		Bukkit.getConsoleSender().sendMessage(Component.text(prefix, NamedTextColor.WHITE).append(Component.text(message, NamedTextColor.WHITE)));
+	}
+
+	public static void success(final String message) {
 		Bukkit.getConsoleSender().sendMessage(Component.text(prefix, NamedTextColor.WHITE).append(Component.text(message, NamedTextColor.GREEN)));
 	}
 
 	public static void warn(final String message) {
-		Bukkit.getConsoleSender().sendMessage(Component.text(prefix + "[WARN]", NamedTextColor.WHITE).append(Component.text(message, NamedTextColor.YELLOW)));
+		Bukkit.getConsoleSender().sendMessage(Component.text(prefix + "[WARN] ", NamedTextColor.WHITE).append(Component.text(message, NamedTextColor.YELLOW)));
 	}
 
 	public static void error(final String message) {
-		Bukkit.getConsoleSender().sendMessage(Component.text(prefix + "[ERROR]", NamedTextColor.WHITE).append(Component.text(message, NamedTextColor.RED)));
+		Bukkit.getConsoleSender().sendMessage(Component.text(prefix + "[ERROR] ", NamedTextColor.WHITE).append(Component.text(message, NamedTextColor.RED)));
 	}
 }

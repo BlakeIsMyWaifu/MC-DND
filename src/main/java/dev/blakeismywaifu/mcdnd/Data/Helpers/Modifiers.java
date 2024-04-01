@@ -1,5 +1,6 @@
 package dev.blakeismywaifu.mcdnd.Data.Helpers;
 
+import dev.blakeismywaifu.mcdnd.Data.Skills;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -35,10 +36,21 @@ public class Modifiers {
 				break;
 			case HALF_PROFICIENCY:
 				if (!Objects.equals(modifier.subType, "ability-checks")) break;
-			case PROFICIENCY:
 			case EXPERTISE:
 			case ADVANTAGE:
 				addModifier(ModifierCategory.SKILLS, modifier);
+				break;
+			case PROFICIENCY:
+				boolean isSkill = Skills.SkillName.labelList.contains(modifier.subType);
+				boolean isSkillStat = modifier.subType.endsWith("-ability-checks");
+				if (isSkill || isSkillStat) {
+					addModifier(ModifierCategory.SKILLS, modifier);
+				} else {
+					addModifier(ModifierCategory.PROFICIENCIES, modifier);
+				}
+				break;
+			case LANGUAGE:
+				addModifier(ModifierCategory.PROFICIENCIES, modifier);
 				break;
 		}
 	}
@@ -66,6 +78,7 @@ public class Modifiers {
 		STATS,
 		SKILLS,
 		MISCELLANEOUS,
-		HITPOINTS
+		HITPOINTS,
+		PROFICIENCIES
 	}
 }

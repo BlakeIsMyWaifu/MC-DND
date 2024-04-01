@@ -102,28 +102,28 @@ public class Skills {
 	}
 
 	private void vantageUpdate(Modifier modifier, Skill.Vantage vantage) {
-		switch (modifier.subType) {
-			case "strength-ability-checks":
-				updateStatVantage(Stat.StatName.STRENGTH, vantage);
-				break;
-			case "dexterity-ability-checks":
-				updateStatVantage(Stat.StatName.DEXTERITY, vantage);
-				break;
-			case "constitution-ability-checks":
-				updateStatVantage(Stat.StatName.CONSTITUTION, vantage);
-				break;
-			case "intelligence-ability-checks":
-				updateStatVantage(Stat.StatName.INTELLIGENCE, vantage);
-				break;
-			case "wisdom-ability-checks":
-				updateStatVantage(Stat.StatName.WISDOM, vantage);
-				break;
-			case "charisma-ability-checks":
-				updateStatVantage(Stat.StatName.CHARISMA, vantage);
-				break;
-		}
-
-		if (SkillName.labelList.contains(modifier.subType)) {
+		if (modifier.subType.endsWith("-ability-checks")) {
+			switch (modifier.subType) {
+				case "strength-ability-checks":
+					updateStatVantage(Stat.StatName.STRENGTH, vantage);
+					break;
+				case "dexterity-ability-checks":
+					updateStatVantage(Stat.StatName.DEXTERITY, vantage);
+					break;
+				case "constitution-ability-checks":
+					updateStatVantage(Stat.StatName.CONSTITUTION, vantage);
+					break;
+				case "intelligence-ability-checks":
+					updateStatVantage(Stat.StatName.INTELLIGENCE, vantage);
+					break;
+				case "wisdom-ability-checks":
+					updateStatVantage(Stat.StatName.WISDOM, vantage);
+					break;
+				case "charisma-ability-checks":
+					updateStatVantage(Stat.StatName.CHARISMA, vantage);
+					break;
+			}
+		} else if (SkillName.labelList.contains(modifier.subType)) {
 			SkillName skillName = SkillName.findSkillName(modifier.subType);
 			Skill skill = this.skills.get(skillName);
 			skill.vantage = vantage;
