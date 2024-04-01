@@ -14,7 +14,8 @@ public class Skill {
 	public Skill(Skills.SkillName skill, Stats stats) {
 		this.skill = skill;
 		this.stat = skill.stat;
-		// TODO update vantage
+		// TODO add restrictions to vantage
+		// TODO add disadvantage when not proficient with armour worn
 		this.modifier = stats.getStat(skill.stat).modifier;
 	}
 

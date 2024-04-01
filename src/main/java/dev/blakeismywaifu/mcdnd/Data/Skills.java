@@ -57,6 +57,19 @@ public class Skills {
 	}
 
 	public void updateData(Modifier modifier, Stats stats, Miscellaneous miscellaneous) {
+		switch (modifier.type) {
+			case HALF_PROFICIENCY:
+			case PROFICIENCY:
+			case EXPERTISE:
+				proficiencyUpdate(modifier, stats, miscellaneous);
+				break;
+			case ADVANTAGE:
+				vantageUpdate(modifier, Skill.Vantage.ADVANTAGE);
+				break;
+		}
+	}
+
+	private void proficiencyUpdate(Modifier modifier, Stats stats, Miscellaneous miscellaneous) {
 		if (SkillName.labelList.contains(modifier.subType)) {
 			SkillName skillName = SkillName.findSkillName(modifier.subType);
 			Skill skill = this.skills.get(skillName);
@@ -86,6 +99,39 @@ public class Skills {
 				skill.modifier = stats.getStat(skill.stat).modifier + Math.floorDiv(miscellaneous.proficiency, 2);
 			}
 		}
+	}
+
+	private void vantageUpdate(Modifier modifier, Skill.Vantage vantage) {
+		switch (modifier.subType) {
+			case "strength-ability-checks":
+				updateStatVantage(Stat.StatName.STRENGTH, vantage);
+				break;
+			case "dexterity-ability-checks":
+				updateStatVantage(Stat.StatName.DEXTERITY, vantage);
+				break;
+			case "constitution-ability-checks":
+				updateStatVantage(Stat.StatName.CONSTITUTION, vantage);
+				break;
+			case "intelligence-ability-checks":
+				updateStatVantage(Stat.StatName.INTELLIGENCE, vantage);
+				break;
+			case "wisdom-ability-checks":
+				updateStatVantage(Stat.StatName.WISDOM, vantage);
+				break;
+			case "charisma-ability-checks":
+				updateStatVantage(Stat.StatName.CHARISMA, vantage);
+				break;
+		}
+
+		if (SkillName.labelList.contains(modifier.subType)) {
+			SkillName skillName = SkillName.findSkillName(modifier.subType);
+			Skill skill = this.skills.get(skillName);
+			skill.vantage = vantage;
+		}
+	}
+
+	private void updateStatVantage(Stat.StatName statName, Skill.Vantage vantage) {
+		skills.values().stream().filter(skill -> skill.stat == statName).forEach(skill -> skill.vantage = vantage);
 	}
 
 	public enum SkillName {

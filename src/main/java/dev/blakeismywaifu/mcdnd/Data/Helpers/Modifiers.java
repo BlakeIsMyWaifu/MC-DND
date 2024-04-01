@@ -37,7 +37,9 @@ public class Modifiers {
 				if (!Objects.equals(modifier.subType, "ability-checks")) break;
 			case PROFICIENCY:
 			case EXPERTISE:
+			case ADVANTAGE:
 				addModifier(ModifierCategory.SKILLS, modifier);
+				break;
 		}
 	}
 
