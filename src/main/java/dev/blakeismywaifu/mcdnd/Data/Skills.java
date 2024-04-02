@@ -55,8 +55,9 @@ public class Skills {
 			vantageAdjustment.put(Skill.Vantage.ADVANTAGE, Component.text(" A ", NamedTextColor.GREEN));
 			vantageAdjustment.put(Skill.Vantage.DISADVANTAGE, Component.text(" D ", NamedTextColor.RED));
 
+			boolean isModifierPositive = skill.modifier >= 0;
 			itemBuilder.lore(
-					Component.text("● " + skill.skill.name + " +" + skill.modifier, proficiencyColours.get(skill.proficiency))
+					Component.text("● " + skill.skill.name + (isModifierPositive ? " +" : " ") + skill.modifier, proficiencyColours.get(skill.proficiency))
 							.append(vantageAdjustment.get(skill.vantage))
 							.append(Component.text(skill.stat.shortHand, NamedTextColor.DARK_GRAY))
 			);
