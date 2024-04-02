@@ -52,6 +52,10 @@ public class Modifiers {
 			case LANGUAGE:
 				addModifier(ModifierCategory.PROFICIENCIES, modifier);
 				break;
+			case RESISTANCE:
+			case IMMUNITY:
+				addModifier(ModifierCategory.DEFENCES, modifier);
+				break;
 		}
 	}
 
@@ -79,6 +83,7 @@ public class Modifiers {
 		SKILLS,
 		MISCELLANEOUS,
 		HITPOINTS,
-		PROFICIENCIES
+		PROFICIENCIES,
+		DEFENCES
 	}
 }

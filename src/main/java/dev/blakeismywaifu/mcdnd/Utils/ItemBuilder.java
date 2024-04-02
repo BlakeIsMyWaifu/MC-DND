@@ -52,22 +52,27 @@ public class ItemBuilder {
 		this.item.setItemMeta(meta);
 	}
 
-	public void lore(List<Component> lore) {
+	private void formatLore() {
 		ItemMeta meta = this.item.getItemMeta();
 		List<Component> formattedLore = new ArrayList<>();
-		lore.forEach(line -> formattedLore.add(line.decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE)));
+		this.lore.forEach(line -> formattedLore.add(line.decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE)));
 		meta.lore(formattedLore);
 		this.item.setItemMeta(meta);
+	}
+	
+	public void lore(List<Component> lore) {
+		this.lore.addAll(lore);
+		formatLore();
 	}
 
 	public void lore(Component lore) {
 		this.lore.add(lore);
-		lore(this.lore);
+		formatLore();
 	}
 
 	public void lore(String lore) {
 		this.lore.add(Component.text(lore, NamedTextColor.GRAY));
-		lore(this.lore);
+		formatLore();
 	}
 
 	public void enchantments(Map<Enchantment, Integer> enchantments) {

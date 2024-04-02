@@ -65,6 +65,8 @@ public class Modifier {
 		ADVANTAGE("advantage"),
 		SET("set"),
 		LANGUAGE("language"),
+		RESISTANCE("resistance"),
+		IMMUNITY("immunity"),
 		_UNKNOWN("unknown");
 
 		private static final Map<String, ModifierType> labelMap = new HashMap<>();

@@ -16,6 +16,7 @@ public class CharacterSheet {
 	public final Player player;
 
 	public CharacterInfo characterInfo;
+	public Defences defences;
 	public HitPoints hitPoints;
 	public Miscellaneous miscellaneous;
 	public Proficiencies proficiencies;
@@ -51,6 +52,9 @@ public class CharacterSheet {
 
 		this.skills = new Skills(stats, this.inventory, this.proficiencies);
 		modifiers.getModifiers(Modifiers.ModifierCategory.SKILLS).forEach(modifier -> this.skills.updateData(modifier, this.stats, this.miscellaneous));
+
+		this.defences = new Defences();
+		modifiers.getModifiers(Modifiers.ModifierCategory.DEFENCES).forEach(modifier -> this.defences.updateData(modifier));
 	}
 
 	public void updateItems() {
@@ -62,6 +66,7 @@ public class CharacterSheet {
 			this.player.getInventory().setItem(statIndex, item);
 			statIndex++;
 		}
+		this.player.getInventory().setItem(18, this.defences.getItem());
 		this.player.getInventory().setItem(28, this.proficiencies.getItem(Proficiencies.Type.ARMOUR));
 		this.player.getInventory().setItem(29, this.proficiencies.getItem(Proficiencies.Type.WEAPON));
 		this.player.getInventory().setItem(30, this.proficiencies.getItem(Proficiencies.Type.TOOL));
