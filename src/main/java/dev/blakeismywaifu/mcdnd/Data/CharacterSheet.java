@@ -46,11 +46,11 @@ public class CharacterSheet {
 		this.miscellaneous = new Miscellaneous(json, this.stats, this.characterInfo);
 		modifiers.getModifiers(Modifiers.ModifierCategory.MISCELLANEOUS).forEach(modifier -> this.miscellaneous.updateData(modifier));
 
-		this.skills = new Skills(stats, this.inventory);
-		modifiers.getModifiers(Modifiers.ModifierCategory.SKILLS).forEach(modifier -> this.skills.updateData(modifier, this.stats, this.miscellaneous));
-
 		this.proficiencies = new Proficiencies();
 		modifiers.getModifiers(Modifiers.ModifierCategory.PROFICIENCIES).forEach(modifier -> this.proficiencies.updateData(modifier));
+
+		this.skills = new Skills(stats, this.inventory, this.proficiencies);
+		modifiers.getModifiers(Modifiers.ModifierCategory.SKILLS).forEach(modifier -> this.skills.updateData(modifier, this.stats, this.miscellaneous));
 	}
 
 	public void updateItems() {

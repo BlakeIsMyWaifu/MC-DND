@@ -13,13 +13,24 @@ public class Proficiencies {
 	private final Map<String, Type> dictionary = new HashMap<>();
 	private final Map<Type, Set<String>> proficiencies = new HashMap<>();
 
+	private final Map<String, String> armourDictionary = new HashMap<>();
+
 	public Proficiencies() {
-		proficiencies.put(Type.ARMOUR, new HashSet<>());
-		proficiencies.put(Type.WEAPON, new HashSet<>());
-		proficiencies.put(Type.TOOL, new HashSet<>());
-		proficiencies.put(Type.LANGUAGE, new HashSet<>());
+		this.proficiencies.put(Type.ARMOUR, new HashSet<>());
+		this.proficiencies.put(Type.WEAPON, new HashSet<>());
+		this.proficiencies.put(Type.TOOL, new HashSet<>());
+		this.proficiencies.put(Type.LANGUAGE, new HashSet<>());
 
 		fillDictionary();
+	}
+
+	public Boolean isArmourProficient(String baseArmourName) {
+		@Nullable String armourType = this.armourDictionary.get(baseArmourName);
+		if (armourType == null) {
+			Console.warn("Missing baseArmourType: " + baseArmourName);
+			return true;
+		}
+		return this.proficiencies.get(Type.ARMOUR).contains(armourType);
 	}
 
 	public void updateData(Modifier modifier) {
@@ -40,25 +51,18 @@ public class Proficiencies {
 	}
 
 	private void addProficiency(Type type, String name) {
-		proficiencies.get(type).add(name);
+		this.proficiencies.get(type).add(name);
 	}
 
 	public ItemStack getItem(Type type) {
 		ItemBuilder itemBuilder = new ItemBuilder(type.friendlyName);
-		proficiencies.get(type).forEach(proficiency -> itemBuilder.lore("● " + proficiency));
+		this.proficiencies.get(type).forEach(proficiency -> itemBuilder.lore("● " + proficiency));
 		return itemBuilder.build();
 	}
 
 	private void fillDictionary() {
-		String[] armours = {
-				"light-armor",
-				"medium-armor",
-				"heavy-armor",
-				"shields",
-		};
-		for (String armour : armours) {
-			dictionary.put(armour, Type.ARMOUR);
-		}
+		String[] armours = {"light-armor", "medium-armor", "heavy-armor", "shields"};
+		Arrays.stream(armours).forEach(armour -> this.dictionary.put(armour, Type.ARMOUR));
 
 		String[] weapons = {
 				"club",
@@ -82,9 +86,7 @@ public class Proficiencies {
 				"spear",
 				"whip",
 		};
-		for (String weapon : weapons) {
-			dictionary.put(weapon, Type.WEAPON);
-		}
+		Arrays.stream(weapons).forEach(weapon -> this.dictionary.put(weapon, Type.WEAPON));
 
 		String[] tools = {
 				"alchemists-supplies",
@@ -96,11 +98,17 @@ public class Proficiencies {
 				"painters-supplies",
 				"poisoners-kit",
 				"thieves-tools",
-				"vehicles-land"
+				"vehicles-land",
 		};
-		for (String tool : tools) {
-			dictionary.put(tool, Type.TOOL);
-		}
+		Arrays.stream(tools).forEach(tool -> this.dictionary.put(tool, Type.TOOL));
+
+		String[] light = {"Studded Leather Armor", "Padded Armor", "Leather Armor"};
+		Arrays.stream(light).forEach(s -> this.armourDictionary.put(s, " Light Armor"));
+		String[] medium = {"Survival Mantle", "Spiked Armor", "Scale Armor", "Hide Armor", "Half Plate Armor", "Chain Shirt", "Breastplate"};
+		Arrays.stream(medium).forEach(s -> this.armourDictionary.put(s, "Medium Armor"));
+		String[] heavy = {"Splint Armor", "Ring Armor", "Plate Armor", "Chain Mail"};
+		Arrays.stream(heavy).forEach(s -> this.armourDictionary.put(s, "Heavy Armor"));
+		this.armourDictionary.put("Shields", "Shields");
 	}
 
 	public enum Type {

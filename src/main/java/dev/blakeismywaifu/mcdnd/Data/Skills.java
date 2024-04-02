@@ -16,15 +16,24 @@ public class Skills {
 
 	public final Map<SkillName, Skill> skills = new HashMap<>();
 
-	public Skills(Stats stats, Inventory inventory) {
+	public Skills(Stats stats, Inventory inventory, Proficiencies proficiencies) {
 		for (SkillName skillName : SkillName.values()) {
 			skills.put(skillName, new Skill(skillName, stats));
 		}
 
 		for (Inventory.Item item : inventory.getItems()) {
-			if (item.definition.stealthCheck == null) continue;
-			if (item.definition.stealthCheck != 2) continue;
-			skills.get(SkillName.STEALTH).vantage = Skill.Vantage.DISADVANTAGE;
+			if (item.definition.stealthCheck != null && item.definition.stealthCheck == 2) {
+				skills.get(SkillName.STEALTH).vantage = Skill.Vantage.DISADVANTAGE;
+			}
+			if (item.equipped && Objects.equals(item.definition.filterType, "Armor")) {
+				boolean isArmourProficient = proficiencies.isArmourProficient(item.definition.baseArmourName);
+				if (!isArmourProficient) {
+					skills.get(SkillName.ACROBATICS).vantage = Skill.Vantage.DISADVANTAGE;
+					skills.get(SkillName.ATHLETICS).vantage = Skill.Vantage.DISADVANTAGE;
+					skills.get(SkillName.SLEIGHT_OF_HAND).vantage = Skill.Vantage.DISADVANTAGE;
+					skills.get(SkillName.STEALTH).vantage = Skill.Vantage.DISADVANTAGE;
+				}
+			}
 		}
 	}
 
