@@ -1,6 +1,6 @@
 package dev.blakeismywaifu.mcdnd.Data;
 
-import dev.blakeismywaifu.mcdnd.Data.Helpers.Modifier;
+import dev.blakeismywaifu.mcdnd.Data.Helpers.Modifiers.Modifier;
 import dev.blakeismywaifu.mcdnd.Utils.Console;
 import dev.blakeismywaifu.mcdnd.Utils.ItemBuilder;
 import org.bukkit.inventory.ItemStack;
@@ -102,13 +102,13 @@ public class Proficiencies {
 		};
 		Arrays.stream(tools).forEach(tool -> this.dictionary.put(tool, Type.TOOL));
 
-		String[] light = {"Studded Leather Armor", "Padded Armor", "Leather Armor"};
+		String[] light = {"Studded Leather", "Padded", "Leather"};
 		Arrays.stream(light).forEach(s -> this.armourDictionary.put(s, " Light Armor"));
-		String[] medium = {"Survival Mantle", "Spiked Armor", "Scale Armor", "Hide Armor", "Half Plate Armor", "Chain Shirt", "Breastplate"};
+		String[] medium = {"Survival Mantle", "Spiked Armor", "Scale Mail", "Hide", "Half Plate", "Chain Shirt", "Breastplate"};
 		Arrays.stream(medium).forEach(s -> this.armourDictionary.put(s, "Medium Armor"));
-		String[] heavy = {"Splint Armor", "Ring Armor", "Plate Armor", "Chain Mail"};
+		String[] heavy = {"Splint", "Ring Mail", "Plate", "Chain Mail"};
 		Arrays.stream(heavy).forEach(s -> this.armourDictionary.put(s, "Heavy Armor"));
-		this.armourDictionary.put("Shields", "Shields");
+		this.armourDictionary.put("Shield", "Shields");
 	}
 
 	public enum Type {

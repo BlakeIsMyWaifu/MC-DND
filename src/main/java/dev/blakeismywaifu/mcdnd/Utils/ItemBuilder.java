@@ -25,7 +25,7 @@ import static org.bukkit.Bukkit.getServer;
 
 public class ItemBuilder {
 
-	private final ArrayList<Component> lore = new ArrayList<>();
+	private final List<Component> lore = new ArrayList<>();
 	private ItemStack item;
 
 	public ItemBuilder(String name) {
@@ -59,7 +59,7 @@ public class ItemBuilder {
 		meta.lore(formattedLore);
 		this.item.setItemMeta(meta);
 	}
-	
+
 	public void lore(List<Component> lore) {
 		this.lore.addAll(lore);
 		formatLore();

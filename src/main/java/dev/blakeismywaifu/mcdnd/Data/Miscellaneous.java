@@ -1,7 +1,7 @@
 package dev.blakeismywaifu.mcdnd.Data;
 
-import dev.blakeismywaifu.mcdnd.Data.Helpers.Modifier;
-import dev.blakeismywaifu.mcdnd.Data.Helpers.Stat;
+import dev.blakeismywaifu.mcdnd.Data.Helpers.Modifiers.Modifier;
+import dev.blakeismywaifu.mcdnd.Data.Stats.Stat;
 import dev.blakeismywaifu.mcdnd.Utils.ItemBuilder;
 import dev.blakeismywaifu.mcdnd.Utils.Range;
 import net.kyori.adventure.text.Component;

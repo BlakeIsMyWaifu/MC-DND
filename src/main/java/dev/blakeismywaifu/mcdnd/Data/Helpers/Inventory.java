@@ -1,5 +1,6 @@
 package dev.blakeismywaifu.mcdnd.Data.Helpers;
 
+import dev.blakeismywaifu.mcdnd.Data.Helpers.Modifiers.Modifier;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONArray;
 import org.json.JSONObject;

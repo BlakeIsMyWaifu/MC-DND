@@ -40,22 +40,22 @@ public class CharacterSheet {
 		this.characterInfo = new CharacterInfo(json);
 
 		this.stats = new Stats(json);
-		modifiers.getModifiers(Modifiers.ModifierCategory.STATS).forEach(modifier -> this.stats.updateData(modifier));
+		modifiers.getModifiers(Modifiers.Category.STATS).forEach(modifier -> this.stats.updateData(modifier));
 
 		this.hitPoints = new HitPoints(json, this.stats, this.characterInfo);
-		modifiers.getModifiers(Modifiers.ModifierCategory.HITPOINTS).forEach(modifier -> this.hitPoints.updateData(modifier, characterInfo));
+		modifiers.getModifiers(Modifiers.Category.HITPOINTS).forEach(modifier -> this.hitPoints.updateData(modifier, characterInfo));
 
 		this.miscellaneous = new Miscellaneous(json, this.stats, this.characterInfo);
-		modifiers.getModifiers(Modifiers.ModifierCategory.MISCELLANEOUS).forEach(modifier -> this.miscellaneous.updateData(modifier));
+		modifiers.getModifiers(Modifiers.Category.MISCELLANEOUS).forEach(modifier -> this.miscellaneous.updateData(modifier));
 
 		this.proficiencies = new Proficiencies();
-		modifiers.getModifiers(Modifiers.ModifierCategory.PROFICIENCIES).forEach(modifier -> this.proficiencies.updateData(modifier));
+		modifiers.getModifiers(Modifiers.Category.PROFICIENCIES).forEach(modifier -> this.proficiencies.updateData(modifier));
 
 		this.skills = new Skills(stats, this.inventory, this.proficiencies);
-		modifiers.getModifiers(Modifiers.ModifierCategory.SKILLS).forEach(modifier -> this.skills.updateData(modifier, this.stats, this.miscellaneous));
+		modifiers.getModifiers(Modifiers.Category.SKILLS).forEach(modifier -> this.skills.updateData(modifier, this.stats, this.miscellaneous));
 
 		this.defences = new Defences();
-		modifiers.getModifiers(Modifiers.ModifierCategory.DEFENCES).forEach(modifier -> this.defences.updateData(modifier));
+		modifiers.getModifiers(Modifiers.Category.DEFENCES).forEach(modifier -> this.defences.updateData(modifier));
 
 		this.conditions = new Conditions(json);
 	}

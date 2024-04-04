@@ -1,6 +1,6 @@
 package dev.blakeismywaifu.mcdnd.Data;
 
-import dev.blakeismywaifu.mcdnd.Data.Helpers.Modifier;
+import dev.blakeismywaifu.mcdnd.Data.Helpers.Modifiers.Modifier;
 import dev.blakeismywaifu.mcdnd.Utils.ItemBuilder;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -22,12 +22,8 @@ public class Defences {
 	public void updateData(Modifier modifier) {
 		// TODO add vulnerability
 		switch (modifier.type) {
-			case RESISTANCE:
-				addDefence(Type.RESISTANCE, modifier.friendlySubtypeName);
-				break;
-			case IMMUNITY:
-				addDefence(Type.IMMUNITY, modifier.friendlySubtypeName);
-				break;
+			case RESISTANCE -> addDefence(Type.RESISTANCE, modifier.friendlySubtypeName);
+			case IMMUNITY -> addDefence(Type.IMMUNITY, modifier.friendlySubtypeName);
 		}
 	}
 
@@ -37,13 +33,13 @@ public class Defences {
 
 	public ItemStack getItem() {
 		ItemBuilder itemBuilder = new ItemBuilder("Defences");
-		itemBuilder.lore(test("Resistance", Type.RESISTANCE, NamedTextColor.GREEN));
-		itemBuilder.lore(test("Immunity", Type.IMMUNITY, NamedTextColor.GREEN));
-		itemBuilder.lore(test("Vulnerability", Type.VULNERABILITY, NamedTextColor.RED));
+		itemBuilder.lore(defenceLore("Resistance", Type.RESISTANCE, NamedTextColor.GREEN));
+		itemBuilder.lore(defenceLore("Immunity", Type.IMMUNITY, NamedTextColor.GREEN));
+		itemBuilder.lore(defenceLore("Vulnerability", Type.VULNERABILITY, NamedTextColor.RED));
 		return itemBuilder.build();
 	}
 
-	private List<Component> test(String label, Type type, NamedTextColor colour) {
+	private List<Component> defenceLore(String label, Type type, NamedTextColor colour) {
 		Set<String> defence = this.defences.get(type);
 		List<Component> lore = new ArrayList<>();
 

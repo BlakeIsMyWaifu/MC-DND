@@ -1,9 +1,8 @@
 package dev.blakeismywaifu.mcdnd.Data;
 
 import dev.blakeismywaifu.mcdnd.Data.Helpers.Inventory;
-import dev.blakeismywaifu.mcdnd.Data.Helpers.Modifier;
-import dev.blakeismywaifu.mcdnd.Data.Helpers.Skill;
-import dev.blakeismywaifu.mcdnd.Data.Helpers.Stat;
+import dev.blakeismywaifu.mcdnd.Data.Helpers.Modifiers.Modifier;
+import dev.blakeismywaifu.mcdnd.Data.Stats.Stat;
 import dev.blakeismywaifu.mcdnd.Utils.ItemBuilder;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -38,7 +37,7 @@ public class Skills {
 	}
 
 	public ItemStack getItem() {
-		ItemBuilder itemBuilder = new ItemBuilder("Skills: ");
+		ItemBuilder itemBuilder = new ItemBuilder("Skills");
 		itemBuilder.modelData(2);
 
 		Stream.of(SkillName.values()).forEach(skillName -> {
@@ -68,14 +67,8 @@ public class Skills {
 
 	public void updateData(Modifier modifier, Stats stats, Miscellaneous miscellaneous) {
 		switch (modifier.type) {
-			case HALF_PROFICIENCY:
-			case PROFICIENCY:
-			case EXPERTISE:
-				proficiencyUpdate(modifier, stats, miscellaneous);
-				break;
-			case ADVANTAGE:
-				vantageUpdate(modifier, Skill.Vantage.ADVANTAGE);
-				break;
+			case HALF_PROFICIENCY, PROFICIENCY, EXPERTISE -> proficiencyUpdate(modifier, stats, miscellaneous);
+			case ADVANTAGE -> vantageUpdate(modifier, Skill.Vantage.ADVANTAGE);
 		}
 	}
 
@@ -86,20 +79,20 @@ public class Skills {
 			Integer statModifier = stats.getStat(skill.stat).modifier;
 
 			switch (modifier.type) {
-				case HALF_PROFICIENCY:
+				case HALF_PROFICIENCY -> {
 					if (skill.proficiency != Skill.Proficiency.NOT) break;
 					skill.proficiency = Skill.Proficiency.HALF;
 					skill.modifier = statModifier + Math.floorDiv(miscellaneous.proficiency, 2);
-					break;
-				case PROFICIENCY:
+				}
+				case PROFICIENCY -> {
 					if (skill.proficiency == Skill.Proficiency.EXPERTISE) break;
 					skill.proficiency = Skill.Proficiency.PROFICIENT;
 					skill.modifier = statModifier + miscellaneous.proficiency;
-					break;
-				case EXPERTISE:
+				}
+				case EXPERTISE -> {
 					skill.proficiency = Skill.Proficiency.EXPERTISE;
 					skill.modifier = statModifier + (2 * miscellaneous.proficiency);
-					break;
+				}
 			}
 		} else if (Objects.equals(modifier.subType, "ability-checks")) {
 			for (SkillName skillName : SkillName.values()) {
@@ -111,27 +104,16 @@ public class Skills {
 		}
 	}
 
+	@SuppressWarnings("SameParameterValue")
 	private void vantageUpdate(Modifier modifier, Skill.Vantage vantage) {
 		if (modifier.subType.endsWith("-ability-checks")) {
 			switch (modifier.subType) {
-				case "strength-ability-checks":
-					updateStatVantage(Stat.StatName.STRENGTH, vantage);
-					break;
-				case "dexterity-ability-checks":
-					updateStatVantage(Stat.StatName.DEXTERITY, vantage);
-					break;
-				case "constitution-ability-checks":
-					updateStatVantage(Stat.StatName.CONSTITUTION, vantage);
-					break;
-				case "intelligence-ability-checks":
-					updateStatVantage(Stat.StatName.INTELLIGENCE, vantage);
-					break;
-				case "wisdom-ability-checks":
-					updateStatVantage(Stat.StatName.WISDOM, vantage);
-					break;
-				case "charisma-ability-checks":
-					updateStatVantage(Stat.StatName.CHARISMA, vantage);
-					break;
+				case "strength-ability-checks" -> updateStatVantage(Stat.StatName.STRENGTH, vantage);
+				case "dexterity-ability-checks" -> updateStatVantage(Stat.StatName.DEXTERITY, vantage);
+				case "constitution-ability-checks" -> updateStatVantage(Stat.StatName.CONSTITUTION, vantage);
+				case "intelligence-ability-checks" -> updateStatVantage(Stat.StatName.INTELLIGENCE, vantage);
+				case "wisdom-ability-checks" -> updateStatVantage(Stat.StatName.WISDOM, vantage);
+				case "charisma-ability-checks" -> updateStatVantage(Stat.StatName.CHARISMA, vantage);
 			}
 		} else if (SkillName.labelList.contains(modifier.subType)) {
 			SkillName skillName = SkillName.findSkillName(modifier.subType);
@@ -186,6 +168,36 @@ public class Skills {
 
 		public static SkillName findSkillName(String label) {
 			return labelMap.get(label);
+		}
+	}
+
+	public static class Skill {
+
+		public final Stat.StatName stat;
+		public final Skills.SkillName skill;
+		public Proficiency proficiency = Proficiency.NOT;
+		public Vantage vantage = Vantage.NONE;
+		public Integer modifier;
+
+		public Skill(Skills.SkillName skill, Stats stats) {
+			this.skill = skill;
+			this.stat = skill.stat;
+			// TODO add restrictions to vantage
+			// TODO add disadvantage when not proficient with armour worn
+			this.modifier = stats.getStat(skill.stat).modifier;
+		}
+
+		public enum Proficiency {
+			NOT,
+			HALF,
+			PROFICIENT,
+			EXPERTISE
+		}
+
+		public enum Vantage {
+			ADVANTAGE,
+			NONE,
+			DISADVANTAGE,
 		}
 	}
 }

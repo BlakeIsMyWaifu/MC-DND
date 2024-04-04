@@ -1,8 +1,8 @@
 package dev.blakeismywaifu.mcdnd.Data;
 
 import dev.blakeismywaifu.mcdnd.Data.Helpers.DNDClass;
-import dev.blakeismywaifu.mcdnd.Data.Helpers.Modifier;
-import dev.blakeismywaifu.mcdnd.Data.Helpers.Stat;
+import dev.blakeismywaifu.mcdnd.Data.Helpers.Modifiers.Modifier;
+import dev.blakeismywaifu.mcdnd.Data.Stats.Stat;
 import org.json.JSONObject;
 
 import java.util.List;
@@ -20,27 +20,10 @@ public class HitPoints {
 		totalHitPoints += this.constitutionModifier;
 
 		switch (characterInfo.classes.get(0).className) {
-			case WIZARD:
-			case SORCERER:
-				totalHitPoints += 6;
-				break;
-			case ARTIFICER:
-			case BARD:
-			case CLERIC:
-			case DRUID:
-			case MONK:
-			case ROGUE:
-			case WARLOCK:
-				totalHitPoints += 8;
-				break;
-			case FIGHTER:
-			case PALADIN:
-			case RANGER:
-				totalHitPoints += 10;
-				break;
-			case BARBARIAN:
-				totalHitPoints += 12;
-				break;
+			case WIZARD, SORCERER -> totalHitPoints += 6;
+			case ARTIFICER, BARD, CLERIC, DRUID, MONK, ROGUE, WARLOCK -> totalHitPoints += 8;
+			case FIGHTER, PALADIN, RANGER -> totalHitPoints += 10;
+			case BARBARIAN -> totalHitPoints += 12;
 		}
 
 		List<DNDClass> classes = characterInfo.classes;
@@ -62,27 +45,10 @@ public class HitPoints {
 		int bonusHitPoints = this.constitutionModifier * level;
 
 		switch (dndClass.className) {
-			case WIZARD:
-			case SORCERER:
-				bonusHitPoints += 4 * level;
-				break;
-			case ARTIFICER:
-			case BARD:
-			case CLERIC:
-			case DRUID:
-			case MONK:
-			case ROGUE:
-			case WARLOCK:
-				bonusHitPoints += 5 * level;
-				break;
-			case FIGHTER:
-			case PALADIN:
-			case RANGER:
-				bonusHitPoints += 6 * level;
-				break;
-			case BARBARIAN:
-				bonusHitPoints += 7 * level;
-				break;
+			case WIZARD, SORCERER -> bonusHitPoints += 4 * level;
+			case ARTIFICER, BARD, CLERIC, DRUID, MONK, ROGUE, WARLOCK -> bonusHitPoints += 5 * level;
+			case FIGHTER, PALADIN, RANGER -> bonusHitPoints += 6 * level;
+			case BARBARIAN -> bonusHitPoints += 7 * level;
 		}
 
 		return bonusHitPoints;
@@ -92,18 +58,19 @@ public class HitPoints {
 		int bonusHitPoints = 0;
 
 		switch (modifier.componentId) {
-			case 49: // Tough Feat
-				bonusHitPoints += 2 * characterInfo.totalLevel;
-				break;
-			case 122: // Hill Dwarf Racial
-				bonusHitPoints += characterInfo.totalLevel;
-				break;
-			case 377: // Draconic Sorcerer Subclass
+			// Tough Feat
+			case 49 -> bonusHitPoints += 2 * characterInfo.totalLevel;
+
+			// Hill Dwarf Racial
+			case 122 -> bonusHitPoints += characterInfo.totalLevel;
+
+			// Draconic Sorcerer Subclass
+			case 377 -> {
 				for (DNDClass dndClass : characterInfo.classes) {
 					if (dndClass.className != DNDClass.ClassName.SORCERER) continue;
 					bonusHitPoints += dndClass.level;
 				}
-				break;
+			}
 		}
 
 		this.maxHitPoints += bonusHitPoints;

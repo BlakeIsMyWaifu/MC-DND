@@ -27,7 +27,7 @@ public class Conditions {
 	}
 
 	public ItemStack getItem() {
-		ItemBuilder itemBuilder = new ItemBuilder("Conditions:");
+		ItemBuilder itemBuilder = new ItemBuilder("Conditions");
 		if (this.conditions.size() == 0) {
 			itemBuilder.lore(Component.text("None", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, true));
 		} else {
