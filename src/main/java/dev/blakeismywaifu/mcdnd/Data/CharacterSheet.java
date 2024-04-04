@@ -16,6 +16,7 @@ public class CharacterSheet {
 	public final Player player;
 
 	public CharacterInfo characterInfo;
+	public Conditions conditions;
 	public Defences defences;
 	public HitPoints hitPoints;
 	public Miscellaneous miscellaneous;
@@ -55,6 +56,8 @@ public class CharacterSheet {
 
 		this.defences = new Defences();
 		modifiers.getModifiers(Modifiers.ModifierCategory.DEFENCES).forEach(modifier -> this.defences.updateData(modifier));
+
+		this.conditions = new Conditions(json);
 	}
 
 	public void updateItems() {
@@ -67,6 +70,7 @@ public class CharacterSheet {
 			statIndex++;
 		}
 		this.player.getInventory().setItem(18, this.defences.getItem());
+		this.player.getInventory().setItem(19, this.conditions.getItem());
 		this.player.getInventory().setItem(28, this.proficiencies.getItem(Proficiencies.Type.ARMOUR));
 		this.player.getInventory().setItem(29, this.proficiencies.getItem(Proficiencies.Type.WEAPON));
 		this.player.getInventory().setItem(30, this.proficiencies.getItem(Proficiencies.Type.TOOL));
