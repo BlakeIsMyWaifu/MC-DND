@@ -14,7 +14,7 @@ import java.util.stream.Stream;
 
 public class Skills {
 
-	public final Map<SkillName, Skill> skills = new HashMap<>();
+	private final Map<SkillName, Skill> skills = new HashMap<>();
 
 	public Skills(Stats stats, Inventory inventory, Proficiencies proficiencies) {
 		for (SkillName skillName : SkillName.values()) {
@@ -33,6 +33,10 @@ public class Skills {
 				skills.get(SkillName.STEALTH).vantage = Modifiers.Vantage.DISADVANTAGE;
 			}
 		}
+	}
+
+	public Skill getSkill(SkillName skillName) {
+		return this.skills.get(skillName);
 	}
 
 	public ItemStack getItem() {

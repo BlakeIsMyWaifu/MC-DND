@@ -1,9 +1,6 @@
 package dev.blakeismywaifu.mcdnd.Data;
 
 import dev.blakeismywaifu.mcdnd.Utils.ItemBuilder;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONArray;
@@ -29,7 +26,7 @@ public class Conditions {
 	public ItemStack getItem() {
 		ItemBuilder itemBuilder = new ItemBuilder("Conditions");
 		if (this.conditions.size() == 0) {
-			itemBuilder.lore(Component.text("None", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, true));
+			itemBuilder.loreNone();
 		} else {
 			this.conditions.forEach(condition -> {
 				String level = " (Level " + condition.level + ")";

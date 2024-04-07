@@ -66,6 +66,10 @@ public class Modifiers {
 			case IMMUNITY:
 				addModifier(Category.DEFENCES, modifier);
 				break;
+			case SET_BASE:
+			case SENSE:
+				addModifier(Category.SENSES, modifier);
+				break;
 		}
 	}
 
@@ -85,7 +89,8 @@ public class Modifiers {
 		HITPOINTS,
 		PROFICIENCIES,
 		DEFENCES,
-		SAVING_THROW
+		SAVING_THROW,
+		SENSES
 	}
 
 	public enum Proficiency {
@@ -156,6 +161,7 @@ public class Modifiers {
 			EXPERTISE("expertise"),
 			HALF_PROFICIENCY("half-proficiency"),
 			SET_BASE("set-base"),
+			SENSE("sense"),
 			ADVANTAGE("advantage"),
 			SET("set"),
 			LANGUAGE("language"),

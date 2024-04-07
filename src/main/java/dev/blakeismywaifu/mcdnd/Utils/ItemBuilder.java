@@ -81,6 +81,10 @@ public class ItemBuilder {
 		formatLore();
 	}
 
+	public void loreNone() {
+		this.lore.add(Component.text("none", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, true));
+	}
+
 	public void enchantments(Map<Enchantment, Integer> enchantments) {
 		ItemMeta meta = this.item.getItemMeta();
 		Iterator<Map.Entry<Enchantment, Integer>> it = enchantments.entrySet().iterator();

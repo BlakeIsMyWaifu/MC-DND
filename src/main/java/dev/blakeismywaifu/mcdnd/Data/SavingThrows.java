@@ -6,7 +6,6 @@ import dev.blakeismywaifu.mcdnd.Data.Stats.Stat;
 import dev.blakeismywaifu.mcdnd.Utils.ItemBuilder;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
@@ -35,7 +34,7 @@ public class SavingThrows {
 	public ItemStack getItem() {
 		ItemBuilder itemBuilder = new ItemBuilder("Saving Throw");
 		if (this.additionModifiers.size() == 0) {
-			itemBuilder.lore(Component.text("none", NamedTextColor.GRAY).decoration(TextDecoration.ITALIC, true));
+			itemBuilder.loreNone();
 		} else {
 			this.additionModifiers.forEach((additionModifier, vantage) -> {
 				NamedTextColor colour = vantage == Modifiers.Vantage.ADVANTAGE ? NamedTextColor.GREEN : NamedTextColor.RED;

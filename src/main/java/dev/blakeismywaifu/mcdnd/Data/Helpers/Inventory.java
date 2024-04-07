@@ -7,6 +7,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Inventory {
 
@@ -19,6 +20,10 @@ public class Inventory {
 
 	public List<Item> getItems() {
 		return items;
+	}
+
+	public @Nullable Item getItemFromId(Integer itemId) {
+		return this.items.stream().filter(item -> Objects.equals(item.definition.id, itemId)).findFirst().orElse(null);
 	}
 
 	public static class Item {

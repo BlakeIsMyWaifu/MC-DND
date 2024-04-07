@@ -21,6 +21,7 @@ public class CharacterSheet {
 	public Miscellaneous miscellaneous;
 	public Proficiencies proficiencies;
 	public SavingThrows savingThrows;
+	public Senses senses;
 	public Skills skills;
 	public Stats stats;
 
@@ -63,6 +64,9 @@ public class CharacterSheet {
 
 		this.savingThrows = new SavingThrows(this.stats, this.proficiencies);
 		modifiers.getModifiers(Modifiers.Category.SAVING_THROW).forEach(modifier -> this.savingThrows.updateDate(modifier, miscellaneous));
+
+		this.senses = new Senses(this.skills);
+		modifiers.getModifiers(Modifiers.Category.SENSES).forEach(modifier -> this.senses.updateData(modifier, this.inventory));
 	}
 
 	public void updateItems() {
@@ -72,6 +76,7 @@ public class CharacterSheet {
 		this.player.getInventory().setItem(18, this.defences.getItem());
 		this.player.getInventory().setItem(19, this.conditions.getItem());
 		this.player.getInventory().setItem(20, this.savingThrows.getItem());
+		this.player.getInventory().setItem(27, this.senses.getItem());
 		this.player.getInventory().setItem(28, this.proficiencies.getItem(Proficiencies.Type.ARMOUR));
 		this.player.getInventory().setItem(29, this.proficiencies.getItem(Proficiencies.Type.WEAPON));
 		this.player.getInventory().setItem(30, this.proficiencies.getItem(Proficiencies.Type.TOOL));
