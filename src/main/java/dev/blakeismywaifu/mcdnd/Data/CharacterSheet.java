@@ -5,7 +5,6 @@ import dev.blakeismywaifu.mcdnd.Data.Helpers.Modifiers;
 import dev.blakeismywaifu.mcdnd.Utils.Fetch;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.json.JSONObject;
 
 import java.util.UUID;
@@ -21,6 +20,7 @@ public class CharacterSheet {
 	public HitPoints hitPoints;
 	public Miscellaneous miscellaneous;
 	public Proficiencies proficiencies;
+	public SavingThrows savingThrows;
 	public Skills skills;
 	public Stats stats;
 
@@ -35,6 +35,8 @@ public class CharacterSheet {
 		JSONObject json = new Fetch("https://character-service.dndbeyond.com/character/v5/character/" + this.characterId).getData();
 
 		Modifiers modifiers = new Modifiers(json);
+
+		// TODO load after and update data accordingly
 		this.inventory = new Inventory(json);
 
 		this.characterInfo = new CharacterInfo(json);
@@ -48,7 +50,7 @@ public class CharacterSheet {
 		this.miscellaneous = new Miscellaneous(json, this.stats, this.characterInfo);
 		modifiers.getModifiers(Modifiers.Category.MISCELLANEOUS).forEach(modifier -> this.miscellaneous.updateData(modifier));
 
-		this.proficiencies = new Proficiencies();
+		this.proficiencies = new Proficiencies(this.inventory);
 		modifiers.getModifiers(Modifiers.Category.PROFICIENCIES).forEach(modifier -> this.proficiencies.updateData(modifier));
 
 		this.skills = new Skills(stats, this.inventory, this.proficiencies);
@@ -58,22 +60,28 @@ public class CharacterSheet {
 		modifiers.getModifiers(Modifiers.Category.DEFENCES).forEach(modifier -> this.defences.updateData(modifier));
 
 		this.conditions = new Conditions(json);
+
+		this.savingThrows = new SavingThrows(this.stats, this.proficiencies);
+		modifiers.getModifiers(Modifiers.Category.SAVING_THROW).forEach(modifier -> this.savingThrows.updateDate(modifier, miscellaneous));
 	}
 
 	public void updateItems() {
 		this.player.getInventory().setItem(9, this.characterInfo.getItem());
 		this.player.getInventory().setItem(10, this.miscellaneous.getItem());
 		this.player.getInventory().setItem(11, this.skills.getItem());
-		int statIndex = 12;
-		for (ItemStack item : this.stats.getItems()) {
-			this.player.getInventory().setItem(statIndex, item);
-			statIndex++;
-		}
 		this.player.getInventory().setItem(18, this.defences.getItem());
 		this.player.getInventory().setItem(19, this.conditions.getItem());
+		this.player.getInventory().setItem(20, this.savingThrows.getItem());
 		this.player.getInventory().setItem(28, this.proficiencies.getItem(Proficiencies.Type.ARMOUR));
 		this.player.getInventory().setItem(29, this.proficiencies.getItem(Proficiencies.Type.WEAPON));
 		this.player.getInventory().setItem(30, this.proficiencies.getItem(Proficiencies.Type.TOOL));
 		this.player.getInventory().setItem(31, this.proficiencies.getItem(Proficiencies.Type.LANGUAGE));
+
+		int statIndex = 0;
+		for (Stats.Stat.StatName statName : Stats.Stat.StatName.values()) {
+			this.player.getInventory().setItem(statIndex + 12, this.stats.getItem(statName));
+			this.player.getInventory().setItem(statIndex + 21, this.savingThrows.getItem(statName));
+			statIndex++;
+		}
 	}
 }

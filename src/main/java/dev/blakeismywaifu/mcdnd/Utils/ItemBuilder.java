@@ -25,11 +25,17 @@ import static org.bukkit.Bukkit.getServer;
 
 public class ItemBuilder {
 
+	private final Material defaultMaterial = Material.PHANTOM_MEMBRANE;
+
 	private final List<Component> lore = new ArrayList<>();
 	private ItemStack item;
 
+	public ItemBuilder() {
+		create(defaultMaterial, "");
+	}
+
 	public ItemBuilder(String name) {
-		create(Material.PHANTOM_MEMBRANE, name);
+		create(defaultMaterial, name);
 	}
 
 	public ItemBuilder(String name, Material material) {

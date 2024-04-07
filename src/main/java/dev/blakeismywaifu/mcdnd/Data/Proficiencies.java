@@ -1,5 +1,6 @@
 package dev.blakeismywaifu.mcdnd.Data;
 
+import dev.blakeismywaifu.mcdnd.Data.Helpers.Inventory;
 import dev.blakeismywaifu.mcdnd.Data.Helpers.Modifiers.Modifier;
 import dev.blakeismywaifu.mcdnd.Utils.Console;
 import dev.blakeismywaifu.mcdnd.Utils.ItemBuilder;
@@ -10,27 +11,47 @@ import java.util.*;
 
 public class Proficiencies {
 
+	private final Inventory inventory;
 	private final Map<String, Type> dictionary = new HashMap<>();
 	private final Map<Type, Set<String>> proficiencies = new HashMap<>();
 
 	private final Map<String, String> armourDictionary = new HashMap<>();
+	private boolean hasArmourProficiencyRan;
+	private boolean isNotArmourProficient;
 
-	public Proficiencies() {
+	public Proficiencies(Inventory inventory) {
 		this.proficiencies.put(Type.ARMOUR, new HashSet<>());
 		this.proficiencies.put(Type.WEAPON, new HashSet<>());
 		this.proficiencies.put(Type.TOOL, new HashSet<>());
 		this.proficiencies.put(Type.LANGUAGE, new HashSet<>());
 
 		fillDictionary();
+
+		this.inventory = inventory;
 	}
 
-	public Boolean isArmourProficient(String baseArmourName) {
-		@Nullable String armourType = this.armourDictionary.get(baseArmourName);
-		if (armourType == null) {
-			Console.warn("Missing baseArmourType: " + baseArmourName);
-			return true;
+	public boolean isNotArmourProficient() {
+		if (this.hasArmourProficiencyRan) {
+			return this.isNotArmourProficient;
 		}
-		return this.proficiencies.get(Type.ARMOUR).contains(armourType);
+
+		boolean isProficient = true;
+
+		for (Inventory.Item item : this.inventory.getItems()) {
+			if (item.equipped && Objects.equals(item.definition.filterType, "Armor")) {
+				@Nullable String armourType = this.armourDictionary.get(item.definition.baseArmourName);
+				if (armourType == null) {
+					Console.warn("Missing baseArmourType: " + item.definition.baseArmourName);
+				} else {
+					if (!this.proficiencies.get(Type.ARMOUR).contains(armourType)) isProficient = false;
+				}
+			}
+		}
+
+		this.hasArmourProficiencyRan = true;
+		this.isNotArmourProficient = !isProficient;
+
+		return this.isNotArmourProficient;
 	}
 
 	public void updateData(Modifier modifier) {
@@ -103,7 +124,7 @@ public class Proficiencies {
 		Arrays.stream(tools).forEach(tool -> this.dictionary.put(tool, Type.TOOL));
 
 		String[] light = {"Studded Leather", "Padded", "Leather"};
-		Arrays.stream(light).forEach(s -> this.armourDictionary.put(s, " Light Armor"));
+		Arrays.stream(light).forEach(s -> this.armourDictionary.put(s, "Light Armor"));
 		String[] medium = {"Survival Mantle", "Spiked Armor", "Scale Mail", "Hide", "Half Plate", "Chain Shirt", "Breastplate"};
 		Arrays.stream(medium).forEach(s -> this.armourDictionary.put(s, "Medium Armor"));
 		String[] heavy = {"Splint", "Ring Mail", "Plate", "Chain Mail"};

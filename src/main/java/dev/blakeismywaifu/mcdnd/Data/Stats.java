@@ -7,9 +7,7 @@ import org.bukkit.inventory.ItemStack;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 public class Stats {
@@ -17,8 +15,7 @@ public class Stats {
 	private final Map<Stat.StatName, Stat> stats = new LinkedHashMap<>();
 
 	public Stats(JSONObject json) {
-		Stat.StatName[] statOrder = {Stat.StatName.STRENGTH, Stat.StatName.DEXTERITY, Stat.StatName.CONSTITUTION, Stat.StatName.INTELLIGENCE, Stat.StatName.WISDOM, Stat.StatName.CHARISMA};
-		for (Stat.StatName stat : statOrder) {
+		for (Stat.StatName stat : Stat.StatName.values()) {
 			this.stats.put(stat, new Stat(stat, json));
 		}
 	}
@@ -27,10 +24,8 @@ public class Stats {
 		return stats.get(statName);
 	}
 
-	public List<ItemStack> getItems() {
-		List<ItemStack> out = new ArrayList<>();
-		stats.values().forEach(stat -> out.add(stat.getItem()));
-		return out;
+	public ItemStack getItem(Stat.StatName statName) {
+		return this.stats.get(statName).getItem();
 	}
 
 	public void updateData(Modifier modifier) {
@@ -81,8 +76,7 @@ public class Stats {
 		public ItemStack getItem() {
 			ItemBuilder item = new ItemBuilder("Modifier +" + this.modifier);
 			item.lore("Total " + this.total);
-			String statName = this.statName.toString().toLowerCase();
-			item.lore(statName.substring(0, 1).toUpperCase() + statName.substring(1));
+			item.lore(this.statName.friendlyName);
 			return item.build();
 		}
 
@@ -93,19 +87,21 @@ public class Stats {
 		}
 
 		public enum StatName {
-			STRENGTH("STR", 0),
-			DEXTERITY("DEX", 1),
-			CONSTITUTION("CON", 2),
-			INTELLIGENCE("INT", 3),
-			WISDOM("WIS", 4),
-			CHARISMA("CHA", 5);
+			STRENGTH(0, "STR", "Strength"),
+			DEXTERITY(1, "DEX", "Dexterity"),
+			CONSTITUTION(2, "CON", "Constitution"),
+			INTELLIGENCE(3, "INT", "Intelligence"),
+			WISDOM(4, "WIS", "Wisdom"),
+			CHARISMA(5, "CHA", "Charisma");
 
 			public final String shortHand;
 			public final Integer index;
+			public final String friendlyName;
 
-			StatName(String shortHand, Integer index) {
-				this.shortHand = shortHand;
+			StatName(Integer index, String shortHand, String friendlyName) {
 				this.index = index;
+				this.shortHand = shortHand;
+				this.friendlyName = friendlyName;
 			}
 		}
 	}

@@ -39,13 +39,22 @@ public class Modifiers {
 				if (!Objects.equals(modifier.subType, "ability-checks")) break;
 			case EXPERTISE:
 			case ADVANTAGE:
-				addModifier(Category.SKILLS, modifier);
+				if (modifier.subType.endsWith("saving-throws")) {
+					addModifier(Category.SAVING_THROW, modifier);
+				} else {
+					addModifier(Category.SKILLS, modifier);
+				}
 				break;
 			case PROFICIENCY:
 				boolean isSkill = Skills.SkillName.labelList.contains(modifier.subType);
 				boolean isSkillStat = modifier.subType.endsWith("-ability-checks");
+
+				boolean isSavingThrow = modifier.subType.endsWith("-saving-throws");
+
 				if (isSkill || isSkillStat) {
 					addModifier(Category.SKILLS, modifier);
+				} else if (isSavingThrow) {
+					addModifier(Category.SAVING_THROW, modifier);
 				} else {
 					addModifier(Category.PROFICIENCIES, modifier);
 				}
@@ -75,7 +84,21 @@ public class Modifiers {
 		MISCELLANEOUS,
 		HITPOINTS,
 		PROFICIENCIES,
-		DEFENCES
+		DEFENCES,
+		SAVING_THROW
+	}
+
+	public enum Proficiency {
+		NOT,
+		HALF,
+		PROFICIENT,
+		EXPERTISE
+	}
+
+	public enum Vantage {
+		ADVANTAGE,
+		NONE,
+		DISADVANTAGE,
 	}
 
 	public static class Modifier {

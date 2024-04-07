@@ -1,6 +1,7 @@
 package dev.blakeismywaifu.mcdnd.Data;
 
 import dev.blakeismywaifu.mcdnd.Data.Helpers.Inventory;
+import dev.blakeismywaifu.mcdnd.Data.Helpers.Modifiers;
 import dev.blakeismywaifu.mcdnd.Data.Helpers.Modifiers.Modifier;
 import dev.blakeismywaifu.mcdnd.Data.Stats.Stat;
 import dev.blakeismywaifu.mcdnd.Utils.ItemBuilder;
@@ -20,18 +21,16 @@ public class Skills {
 			skills.put(skillName, new Skill(skillName, stats));
 		}
 
+		if (proficiencies.isNotArmourProficient()) {
+			skills.get(SkillName.ACROBATICS).vantage = Modifiers.Vantage.DISADVANTAGE;
+			skills.get(SkillName.ATHLETICS).vantage = Modifiers.Vantage.DISADVANTAGE;
+			skills.get(SkillName.SLEIGHT_OF_HAND).vantage = Modifiers.Vantage.DISADVANTAGE;
+			skills.get(SkillName.STEALTH).vantage = Modifiers.Vantage.DISADVANTAGE;
+		}
+
 		for (Inventory.Item item : inventory.getItems()) {
 			if (item.definition.stealthCheck != null && item.definition.stealthCheck == 2) {
-				skills.get(SkillName.STEALTH).vantage = Skill.Vantage.DISADVANTAGE;
-			}
-			if (item.equipped && Objects.equals(item.definition.filterType, "Armor")) {
-				boolean isArmourProficient = proficiencies.isArmourProficient(item.definition.baseArmourName);
-				if (!isArmourProficient) {
-					skills.get(SkillName.ACROBATICS).vantage = Skill.Vantage.DISADVANTAGE;
-					skills.get(SkillName.ATHLETICS).vantage = Skill.Vantage.DISADVANTAGE;
-					skills.get(SkillName.SLEIGHT_OF_HAND).vantage = Skill.Vantage.DISADVANTAGE;
-					skills.get(SkillName.STEALTH).vantage = Skill.Vantage.DISADVANTAGE;
-				}
+				skills.get(SkillName.STEALTH).vantage = Modifiers.Vantage.DISADVANTAGE;
 			}
 		}
 	}
@@ -43,16 +42,16 @@ public class Skills {
 		Stream.of(SkillName.values()).forEach(skillName -> {
 			Skill skill = skills.get(skillName);
 
-			Map<Skill.Proficiency, NamedTextColor> proficiencyColours = new HashMap<>();
-			proficiencyColours.put(Skill.Proficiency.NOT, NamedTextColor.GRAY);
-			proficiencyColours.put(Skill.Proficiency.HALF, NamedTextColor.YELLOW);
-			proficiencyColours.put(Skill.Proficiency.PROFICIENT, NamedTextColor.GOLD);
-			proficiencyColours.put(Skill.Proficiency.EXPERTISE, NamedTextColor.LIGHT_PURPLE);
+			Map<Modifiers.Proficiency, NamedTextColor> proficiencyColours = new HashMap<>();
+			proficiencyColours.put(Modifiers.Proficiency.NOT, NamedTextColor.GRAY);
+			proficiencyColours.put(Modifiers.Proficiency.HALF, NamedTextColor.YELLOW);
+			proficiencyColours.put(Modifiers.Proficiency.PROFICIENT, NamedTextColor.GOLD);
+			proficiencyColours.put(Modifiers.Proficiency.EXPERTISE, NamedTextColor.LIGHT_PURPLE);
 
-			Map<Skill.Vantage, Component> vantageAdjustment = new HashMap<>();
-			vantageAdjustment.put(Skill.Vantage.NONE, Component.text(" "));
-			vantageAdjustment.put(Skill.Vantage.ADVANTAGE, Component.text(" A ", NamedTextColor.GREEN));
-			vantageAdjustment.put(Skill.Vantage.DISADVANTAGE, Component.text(" D ", NamedTextColor.RED));
+			Map<Modifiers.Vantage, Component> vantageAdjustment = new HashMap<>();
+			vantageAdjustment.put(Modifiers.Vantage.NONE, Component.text(" "));
+			vantageAdjustment.put(Modifiers.Vantage.ADVANTAGE, Component.text(" A ", NamedTextColor.GREEN));
+			vantageAdjustment.put(Modifiers.Vantage.DISADVANTAGE, Component.text(" D ", NamedTextColor.RED));
 
 			boolean isModifierPositive = skill.modifier >= 0;
 			itemBuilder.lore(
@@ -68,7 +67,7 @@ public class Skills {
 	public void updateData(Modifier modifier, Stats stats, Miscellaneous miscellaneous) {
 		switch (modifier.type) {
 			case HALF_PROFICIENCY, PROFICIENCY, EXPERTISE -> proficiencyUpdate(modifier, stats, miscellaneous);
-			case ADVANTAGE -> vantageUpdate(modifier, Skill.Vantage.ADVANTAGE);
+			case ADVANTAGE -> vantageUpdate(modifier, Modifiers.Vantage.ADVANTAGE);
 		}
 	}
 
@@ -80,32 +79,32 @@ public class Skills {
 
 			switch (modifier.type) {
 				case HALF_PROFICIENCY -> {
-					if (skill.proficiency != Skill.Proficiency.NOT) break;
-					skill.proficiency = Skill.Proficiency.HALF;
+					if (skill.proficiency != Modifiers.Proficiency.NOT) break;
+					skill.proficiency = Modifiers.Proficiency.HALF;
 					skill.modifier = statModifier + Math.floorDiv(miscellaneous.proficiency, 2);
 				}
 				case PROFICIENCY -> {
-					if (skill.proficiency == Skill.Proficiency.EXPERTISE) break;
-					skill.proficiency = Skill.Proficiency.PROFICIENT;
+					if (skill.proficiency == Modifiers.Proficiency.EXPERTISE) break;
+					skill.proficiency = Modifiers.Proficiency.PROFICIENT;
 					skill.modifier = statModifier + miscellaneous.proficiency;
 				}
 				case EXPERTISE -> {
-					skill.proficiency = Skill.Proficiency.EXPERTISE;
+					skill.proficiency = Modifiers.Proficiency.EXPERTISE;
 					skill.modifier = statModifier + (2 * miscellaneous.proficiency);
 				}
 			}
 		} else if (Objects.equals(modifier.subType, "ability-checks")) {
 			for (SkillName skillName : SkillName.values()) {
 				Skill skill = this.skills.get(skillName);
-				if (skill.proficiency != Skill.Proficiency.NOT) return;
-				skill.proficiency = Skill.Proficiency.HALF;
+				if (skill.proficiency != Modifiers.Proficiency.NOT) return;
+				skill.proficiency = Modifiers.Proficiency.HALF;
 				skill.modifier = stats.getStat(skill.stat).modifier + Math.floorDiv(miscellaneous.proficiency, 2);
 			}
 		}
 	}
 
 	@SuppressWarnings("SameParameterValue")
-	private void vantageUpdate(Modifier modifier, Skill.Vantage vantage) {
+	private void vantageUpdate(Modifier modifier, Modifiers.Vantage vantage) {
 		if (modifier.subType.endsWith("-ability-checks")) {
 			switch (modifier.subType) {
 				case "strength-ability-checks" -> updateStatVantage(Stat.StatName.STRENGTH, vantage);
@@ -122,7 +121,7 @@ public class Skills {
 		}
 	}
 
-	private void updateStatVantage(Stat.StatName statName, Skill.Vantage vantage) {
+	private void updateStatVantage(Stat.StatName statName, Modifiers.Vantage vantage) {
 		skills.values().stream().filter(skill -> skill.stat == statName).forEach(skill -> skill.vantage = vantage);
 	}
 
@@ -175,29 +174,15 @@ public class Skills {
 
 		public final Stat.StatName stat;
 		public final Skills.SkillName skill;
-		public Proficiency proficiency = Proficiency.NOT;
-		public Vantage vantage = Vantage.NONE;
+		public Modifiers.Proficiency proficiency = Modifiers.Proficiency.NOT;
+		public Modifiers.Vantage vantage = Modifiers.Vantage.NONE;
 		public Integer modifier;
 
 		public Skill(Skills.SkillName skill, Stats stats) {
 			this.skill = skill;
 			this.stat = skill.stat;
 			// TODO add restrictions to vantage
-			// TODO add disadvantage when not proficient with armour worn
 			this.modifier = stats.getStat(skill.stat).modifier;
-		}
-
-		public enum Proficiency {
-			NOT,
-			HALF,
-			PROFICIENT,
-			EXPERTISE
-		}
-
-		public enum Vantage {
-			ADVANTAGE,
-			NONE,
-			DISADVANTAGE,
 		}
 	}
 }
