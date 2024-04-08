@@ -16,7 +16,7 @@ public class UpdatePlayer extends BukkitRunnable {
 	@Override
 	public void run() {
 		Player player = this.characterSheet.player;
-		if (!TestUtils.isDndPlayer(player)) return;
+		if (TestUtils.isNotDNDPlayer(player)) return;
 
 		this.characterSheet.updateData();
 		this.characterSheet.updateItems();

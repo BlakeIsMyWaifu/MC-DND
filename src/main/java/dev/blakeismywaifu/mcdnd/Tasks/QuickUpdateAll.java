@@ -25,7 +25,7 @@ public class QuickUpdateAll extends BukkitRunnable {
 		List<UUID> playerIds = this.main.playerCache.listPlayers();
 		playerIds.forEach(playerId -> {
 			Player player = Bukkit.getPlayer(playerId);
-			if (!TestUtils.isDndPlayer(player)) return;
+			if (TestUtils.isNotDNDPlayer(player)) return;
 
 			CharacterSheet characterSheet = this.main.playerCache.getPlayer(playerId);
 
