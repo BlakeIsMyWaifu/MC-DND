@@ -1,6 +1,6 @@
 package dev.blakeismywaifu.mcdnd.Data;
 
-import dev.blakeismywaifu.mcdnd.Data.Helpers.BookViewer;
+import dev.blakeismywaifu.mcdnd.Data.Books.Feats;
 import dev.blakeismywaifu.mcdnd.Data.Helpers.Inventory;
 import dev.blakeismywaifu.mcdnd.Data.Helpers.Modifiers;
 import dev.blakeismywaifu.mcdnd.Utils.Fetch;
@@ -27,7 +27,7 @@ public class CharacterSheet {
 	public Stats stats;
 
 	public Inventory inventory;
-	public BookViewer bookViewer;
+	public Feats feats;
 
 	public CharacterSheet(UUID playerId, String id) {
 		this.characterId = id;
@@ -70,7 +70,7 @@ public class CharacterSheet {
 		this.senses = new Senses(this.skills);
 		modifiers.getModifiers(Modifiers.Category.SENSES).forEach(modifier -> this.senses.updateData(modifier, this.inventory));
 
-		this.bookViewer = new BookViewer();
+		this.feats = new Feats(json);
 	}
 
 	public void updateItems() {
@@ -93,9 +93,6 @@ public class CharacterSheet {
 			statIndex++;
 		}
 
-		this.player.getInventory().setItem(32, this.bookViewer.getInventoryItem(BookViewer.BookType.ACTIONS));
-		this.player.getInventory().setItem(33, this.bookViewer.getInventoryItem(BookViewer.BookType.SPELLS));
-		this.player.getInventory().setItem(34, this.bookViewer.getInventoryItem(BookViewer.BookType.ITEMS));
-		this.player.getInventory().setItem(35, this.bookViewer.getInventoryItem(BookViewer.BookType.FEATS));
+		this.player.getInventory().setItem(35, this.feats.getItem());
 	}
 }

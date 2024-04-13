@@ -2,8 +2,10 @@ package dev.blakeismywaifu.mcdnd.Events;
 
 import dev.blakeismywaifu.mcdnd.Data.CharacterSheet;
 import dev.blakeismywaifu.mcdnd.Main;
+import dev.blakeismywaifu.mcdnd.Utils.Console;
 import dev.blakeismywaifu.mcdnd.Utils.Range;
 import dev.blakeismywaifu.mcdnd.Utils.TestUtils;
+import net.kyori.adventure.inventory.Book;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -11,7 +13,6 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
-import org.bukkit.inventory.ItemStack;
 
 public class InventoryEvents implements Listener {
 
@@ -34,13 +35,7 @@ public class InventoryEvents implements Listener {
 		Player player = (Player) event.getWhoClicked();
 		if (TestUtils.isNotDNDPlayer(player)) return;
 
-		int slot = event.getSlot();
-		Range range = new Range(32, 35);
-		if (range.contains(slot)) {
-			CharacterSheet characterSheet = main.playerCache.getPlayer(player.getUniqueId());
-			ItemStack book = characterSheet.bookViewer.getBook(slot);
-			player.openBook(book);
-		}
+		handleBookItemClick(player, event);
 
 		event.setCancelled(true);
 		player.updateInventory();
@@ -60,5 +55,22 @@ public class InventoryEvents implements Listener {
 		if (TestUtils.isNotDNDPlayer(player)) return;
 		event.setCancelled(true);
 		player.updateInventory();
+	}
+
+	private void handleBookItemClick(Player player, InventoryClickEvent event) {
+		int slot = event.getSlot();
+		Range range = new Range(32, 35);
+		if (range.contains(slot)) {
+			CharacterSheet characterSheet = main.playerCache.getPlayer(player.getUniqueId());
+			switch (slot) {
+				case 32 -> Console.warn("Missing actions book");
+				case 33 -> Console.warn("Missing spells book");
+				case 34 -> Console.warn("Missing items book");
+				case 35 -> {
+					Book book = characterSheet.feats.getBook();
+					player.openBook(book);
+				}
+			}
+		}
 	}
 }
