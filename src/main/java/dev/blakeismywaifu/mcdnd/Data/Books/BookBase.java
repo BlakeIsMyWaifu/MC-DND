@@ -7,20 +7,23 @@ import net.kyori.adventure.text.event.ClickEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.inventory.ItemStack;
-import org.javatuples.Pair;
+import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
 
-import java.util.*;
+import java.util.LinkedList;
+import java.util.List;
 
 public abstract class BookBase {
 
 	protected final JSONObject json;
 	private final String bookTitle;
+	private final List<Category> categories;
 	private final Book book;
 
 	protected BookBase(String title, JSONObject json) {
 		this.bookTitle = title;
 		this.json = json;
+		this.categories = generateContent();
 		this.book = generateBook();
 	}
 
@@ -28,97 +31,127 @@ public abstract class BookBase {
 		return this.book;
 	}
 
-	protected abstract Map<String, List<String>> generateContent();
+	protected abstract List<Category> generateContent();
 
 	private Book generateBook() {
-		Map<String, List<String>> content = generateContent();
-		Map<String, Pair<List<Component>, Integer>> infoPages = generateInfoPages(content);
-
-		List<Component> pages = new LinkedList<>();
-		pages.add(generateIndexPage(infoPages));
-		infoPages.forEach((a, b) -> pages.addAll(b.getValue0()));
-
 		Book.Builder bookBuilder = Book.builder()
 				.author(Component.text("D&D"))
 				.title(Component.text("D&D"));
-		pages.forEach(bookBuilder::addPage);
+
+		bookBuilder.addPage(generateIndexPage());
+		this.categories.forEach(category -> category.getPages().forEach(bookBuilder::addPage));
+
 		return bookBuilder.build();
 	}
 
-	private Component generateIndexPage(Map<String, Pair<List<Component>, Integer>> content) {
+	private Component generateIndexPage() {
 		Component page = Component.text(this.bookTitle).decoration(TextDecoration.BOLD, true)
 				.appendNewline()
 				.appendNewline();
 
 		int nextPage = 2;
-		for (Map.Entry<String, Pair<List<Component>, Integer>> entry : content.entrySet()) {
-			String link = entry.getKey();
+		for (Category category : this.categories) {
 
 			Component bullet = Component.text("● ")
 					.decoration(TextDecoration.BOLD, true)
 					.decoration(TextDecoration.UNDERLINED, false);
-			Component text = Component.text(link)
+
+			Component text = Component.text(category.getTitle())
 					.color(NamedTextColor.DARK_BLUE)
 					.decoration(TextDecoration.BOLD, false)
 					.decoration(TextDecoration.UNDERLINED, true)
 					.clickEvent(ClickEvent.changePage(nextPage))
 					.appendNewline()
 					.appendNewline();
+
 			page = page.append(bullet.append(text));
 
-			int pagesAmount = entry.getValue().getValue1();
-			nextPage += pagesAmount;
+			nextPage += category.getPageCount();
 		}
 
 		return page;
-	}
-
-	private Map<String, Pair<List<Component>, Integer>> generateInfoPages(Map<String, List<String>> contents) {
-		Map<String, Pair<List<Component>, Integer>> out = new LinkedHashMap<>();
-		contents.forEach((key, value) -> {
-			value.removeIf(Objects::isNull);
-			out.put(key, generateCategoryPages(key, value));
-		});
-		return out;
-	}
-
-	private Pair<List<Component>, Integer> generateCategoryPages(String title, List<String> contents) {
-		List<Component> pages = new LinkedList<>();
-
-		int lineNumber = 3;
-		int currentPage = 0;
-
-		Component out = Component.text(title)
-				.decoration(TextDecoration.BOLD, true)
-				.appendNewline()
-				.appendNewline();
-		pages.add(out);
-
-		for (String content : contents) {
-			Component line = Component.text("● " + content).decoration(TextDecoration.BOLD, false);
-
-			// TODO line size number should be updated once a resource pack has been made
-			int extraLineAmount = Math.floorDiv(content.length(), 22);
-
-			lineNumber += 1 + extraLineAmount;
-			if (lineNumber > 14) {
-				currentPage += 1;
-				lineNumber = 0;
-			}
-
-			if (pages.size() <= currentPage) {
-				pages.add(line.appendNewline());
-			} else {
-				pages.set(currentPage, pages.get(currentPage).append(line).appendNewline());
-			}
-		}
-
-		return new Pair<>(pages, currentPage + 1);
 	}
 
 	public ItemStack getItem() {
 		ItemBuilder itemBuilder = new ItemBuilder(this.bookTitle);
 		itemBuilder.lore(Component.text("Click to open", NamedTextColor.GREEN));
 		return itemBuilder.build();
+	}
+
+	protected static class Category {
+
+		private final String title;
+		private final List<Component> pages;
+		private final Integer pageCount;
+
+		public Category(String title, List<@Nullable String> contents) {
+			this.title = title;
+
+			List<Component> pages = new LinkedList<>();
+
+			int lineNumber = 2;
+			int currentPage = 0;
+
+			Component out = Component.text(this.title)
+					.decoration(TextDecoration.BOLD, true)
+					.appendNewline()
+					.appendNewline();
+			pages.add(out);
+
+			for (@Nullable String content : contents) {
+				if (content == null) continue;
+
+				Component line = Component.text("● " + content).decoration(TextDecoration.BOLD, false);
+
+				// TODO line size number should be updated once a resource pack has been made
+				int extraLineAmount = Math.floorDiv(content.length(), 22);
+
+				lineNumber += 1 + extraLineAmount;
+				if (lineNumber > 14) {
+					currentPage += 1;
+					lineNumber = 1 + extraLineAmount;
+				}
+
+				if (pages.size() <= currentPage) {
+					pages.add(line.appendNewline());
+				} else {
+					pages.set(currentPage, pages.get(currentPage).append(line).appendNewline());
+				}
+			}
+
+			if (lineNumber < 13) {
+				Component padding = Component.text("").appendNewline();
+				while (lineNumber < 12) {
+					padding = padding.appendNewline();
+					lineNumber++;
+				}
+
+				Component backPadding = Component.text("       ")
+						.decoration(TextDecoration.BOLD, false)
+						.decoration(TextDecoration.UNDERLINED, false);
+				Component backButton = Component.text("Index Page", NamedTextColor.DARK_BLUE)
+						.decoration(TextDecoration.BOLD, false)
+						.decoration(TextDecoration.UNDERLINED, true)
+						.clickEvent(ClickEvent.changePage(0));
+
+				Component section = padding.append(backPadding).append(backButton);
+				pages.set(currentPage, pages.get(currentPage).append(section));
+			}
+
+			this.pages = pages;
+			this.pageCount = currentPage + 1;
+		}
+
+		public String getTitle() {
+			return title;
+		}
+
+		public List<Component> getPages() {
+			return pages;
+		}
+
+		public Integer getPageCount() {
+			return pageCount;
+		}
 	}
 }

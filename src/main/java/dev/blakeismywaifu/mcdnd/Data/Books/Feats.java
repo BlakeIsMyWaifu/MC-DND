@@ -1,14 +1,11 @@
 package dev.blakeismywaifu.mcdnd.Data.Books;
 
-import org.javatuples.Pair;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 public class Feats extends BookBase {
 
@@ -17,19 +14,15 @@ public class Feats extends BookBase {
 	}
 
 	@Override
-	protected Map<String, List<@Nullable String>> generateContent() {
-		Map<String, List<String>> books = new LinkedHashMap<>();
-		classFeaturesContents().forEach(classFeatures -> {
-			String title = classFeatures.getValue0() + " Features";
-			books.put(title, classFeatures.getValue1());
-		});
-		books.put("Racial Traits", racialTraitsContents());
-		books.put("Feats", featsContents());
-		return books;
+	protected List<Category> generateContent() {
+		List<Category> categories = new LinkedList<>(classFeaturesContents());
+		categories.add(racialTraitsCategory());
+		categories.add(featsCategory());
+		return categories;
 	}
 
-	private List<Pair<String, List<@Nullable String>>> classFeaturesContents() {
-		List<Pair<String, List<@Nullable String>>> out = new LinkedList<>();
+	private List<Category> classFeaturesContents() {
+		List<Category> out = new LinkedList<>();
 
 		JSONArray classes = this.json.getJSONArray("classes");
 		for (Object dndClassObject : classes) {
@@ -41,30 +34,30 @@ public class Feats extends BookBase {
 			List<@Nullable String> contents = new LinkedList<>();
 			classFeatures.forEach(feature -> contents.add(getName(feature)));
 
-			Pair<String, List<@Nullable String>> classData = new Pair<>(className, contents);
-			out.add(classData);
+			Category category = new Category(className + " Features", contents);
+			out.add(category);
 		}
 
 		return out;
 	}
 
-	private List<@Nullable String> racialTraitsContents() {
+	private Category racialTraitsCategory() {
 		List<@Nullable String> contents = new LinkedList<>();
 
 		JSONObject race = this.json.getJSONObject("race");
 		JSONArray racialTraits = race.getJSONArray("racialTraits");
 		racialTraits.forEach(trait -> contents.add(getName(trait)));
 
-		return contents;
+		return new Category("Racial Traits", contents);
 	}
 
-	private List<String> featsContents() {
+	private Category featsCategory() {
 		List<String> contents = new LinkedList<>();
 
 		JSONArray feats = this.json.getJSONArray("feats");
 		feats.forEach(feat -> contents.add(getName(feat)));
 
-		return contents;
+		return new Category("Feats", contents);
 	}
 
 	private @Nullable String getName(Object parentObject) {
