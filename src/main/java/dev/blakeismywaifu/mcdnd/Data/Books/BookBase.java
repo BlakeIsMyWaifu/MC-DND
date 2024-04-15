@@ -4,10 +4,10 @@ import dev.blakeismywaifu.mcdnd.Utils.ItemBuilder;
 import net.kyori.adventure.inventory.Book;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
+import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
 
 import java.util.LinkedList;
@@ -84,7 +84,7 @@ public abstract class BookBase {
 		private final List<Component> pages;
 		private final Integer pageCount;
 
-		public Category(String title, List<@Nullable String> contents) {
+		public Category(String title, List<String[]> contents) {
 			this.title = title;
 
 			List<Component> pages = new LinkedList<>();
@@ -98,13 +98,20 @@ public abstract class BookBase {
 					.appendNewline();
 			pages.add(out);
 
-			for (@Nullable String content : contents) {
-				if (content == null) continue;
+			for (String[] content : contents) {
+				if (content.length == 0) continue;
 
-				Component line = Component.text("● " + content).decoration(TextDecoration.BOLD, false);
+				String name = content[0];
+				String description = content[1];
+				assert name != null;
+				assert description != null;
+
+				Component line = Component.text("● " + name)
+						.decoration(TextDecoration.BOLD, false)
+						.hoverEvent(HoverEvent.showText(Component.text(description)));
 
 				// TODO line size number should be updated once a resource pack has been made
-				int extraLineAmount = Math.floorDiv(content.length(), 22);
+				int extraLineAmount = Math.floorDiv(name.length(), 22);
 
 				lineNumber += 1 + extraLineAmount;
 				if (lineNumber > 14) {

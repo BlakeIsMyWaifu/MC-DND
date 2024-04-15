@@ -1,6 +1,5 @@
 package dev.blakeismywaifu.mcdnd.Data.Books;
 
-import org.jetbrains.annotations.Nullable;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -31,8 +30,8 @@ public class Feats extends BookBase {
 			String className = dndClass.getJSONObject("definition").getString("name");
 
 			JSONArray classFeatures = dndClass.getJSONArray("classFeatures");
-			List<@Nullable String> contents = new LinkedList<>();
-			classFeatures.forEach(feature -> contents.add(getName(feature)));
+			List<String[]> contents = new LinkedList<>();
+			classFeatures.forEach(feature -> contents.add(getContent(feature)));
 
 			Category category = new Category(className + " Features", contents);
 			out.add(category);
@@ -42,30 +41,34 @@ public class Feats extends BookBase {
 	}
 
 	private Category racialTraitsCategory() {
-		List<@Nullable String> contents = new LinkedList<>();
+		List<String[]> contents = new LinkedList<>();
 
 		JSONObject race = this.json.getJSONObject("race");
 		JSONArray racialTraits = race.getJSONArray("racialTraits");
-		racialTraits.forEach(trait -> contents.add(getName(trait)));
+		racialTraits.forEach(trait -> contents.add(getContent(trait)));
 
 		return new Category("Racial Traits", contents);
 	}
 
 	private Category featsCategory() {
-		List<String> contents = new LinkedList<>();
+		List<String[]> contents = new LinkedList<>();
 
 		JSONArray feats = this.json.getJSONArray("feats");
-		feats.forEach(feat -> contents.add(getName(feat)));
+		feats.forEach(feat -> contents.add(getContent(feat)));
 
 		return new Category("Feats", contents);
 	}
 
-	private @Nullable String getName(Object parentObject) {
+	private String[] getContent(Object parentObject) {
 		JSONObject parentJson = (JSONObject) parentObject;
 		JSONObject definition = parentJson.getJSONObject("definition");
 		if (!definition.isNull("hideInSheet")) {
-			if (definition.getBoolean("hideInSheet")) return null;
+			if (definition.getBoolean("hideInSheet")) return new String[]{};
 		}
-		return definition.getString("name");
+		String name = definition.getString("name");
+		// TODO fallback to other descriptions
+		// TODO parse weird inline calculations
+		String description = definition.isNull("snippet") ? "" : definition.getString("snippet");
+		return new String[]{name, description};
 	}
 }
